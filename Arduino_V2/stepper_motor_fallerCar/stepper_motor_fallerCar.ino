@@ -6,6 +6,8 @@
   This code is in beta state and under construction.
   Description at the end of this file; after all codeline
 
+  **** For test feedback from MCU use serial monitor ****
+
   Arduino and 28byj-48 stepper motor with ULN2003 driver board
   AccelStepper library
   More info and thanks to: 
@@ -38,7 +40,7 @@ uint16_t delay_1 = 1000; // n sek. delay
 uint16_t delay_2 = 1500; // n sek. delay
 uint16_t delay_3 = 2000; // n sek. delay
 
-int stepper_pos = 0; // status of stepper motor position
+int stepper_pos = 0; // status of stepper motor position - NOT IN USE
 
 int stepM_speed_right = 200; // speed for moving clockwise (right)
 
@@ -99,8 +101,8 @@ void setup() {
 
   Serial.begin(9600); // setup and start serial communication default Tx0 / Rx0
 
-  pinMode(optic_Sensor_1, INPUT); // pin 2 - external PULLDOWN resistor
-  pinMode(stop_start_car, OUTPUT);   // Pin 4
+  pinMode(optic_Sensor_1, INPUT);    // pin 2 - external PULLDOWN resistor
+  pinMode(stop_start_car, OUTPUT);   // Pin 4 - Faller Car system stop/start device
   pinMode(LED_stepper_move, OUTPUT); // Pin 5
   pinMode(LED_stepper_stop, OUTPUT); // Pin 6
     
@@ -109,7 +111,7 @@ void setup() {
   digitalWrite(LED_stepper_move, LOW); // set LED IN OFF
   digitalWrite(LED_stepper_stop, HIGH); // set LED IN ON
   
-  stepper_pos = 0; // set variable to 0
+  stepper_pos = 0; // set variable to - NOT IN USE
   
   // move stepper to start position
   // MOVE STEPPER RIGHT UNTIL OPTICAL SENSOR == LOW
