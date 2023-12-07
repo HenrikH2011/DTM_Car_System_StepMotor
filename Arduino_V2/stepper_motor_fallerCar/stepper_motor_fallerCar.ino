@@ -1,16 +1,16 @@
 /*
   Project: Arduino - Steppermotor Control System
-  DEV: Henrik Hansen, Electronic And Code (EAC), Denmark
+  DEV: Henrik Hansen, Electronic and Code (EaC), Denmark
   MCU: Arduino NANO or UNO (atmega328P)
 
   This code is in beta state and under construction.
+  Description at the end of this file; after all codeline
 
   Arduino and 28byj-48 stepper motor with ULN2003 driver board
   AccelStepper library
-  More info: 
+  More info and thanks to: 
   https://www.makerguides.com
   https://dronebotworkshop.com/stepper-motors-with-arduino/
-
   AccelStepper original library
   https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 */
@@ -20,13 +20,12 @@
 #include <AccelStepper.h>
 
 // Optical Sensor pin definition:
-#define optic_Sensor_1 2 //optical Sensor on Pin 2 - start position
-#define car_Sensor 3 //Sensor on Pin 3 for Car count - SKAL FLYTTES TIL INTERRUPT PIN
-#define stop_start_car 4 //Faller-Car start/stop signal Pin
+const byte optic_Sensor_1 = 2; //optical Interrupt Sensor on Pin 2 - start position
+const byte stop_start_car = 4; //Faller-Car start/stop signal Pin
 
 // LED for visual indication of movement:
-#define LED_stepper_move 5  // LED indicator for moving stepper - RED LED
-#define LED_stepper_stop 6 // LED indicator for stop stepper - GREEN LED
+const byte LED_stepper_move = 5;  // LED indicator for moving stepper - RED LED
+const byte LED_stepper_stop = 6; // LED indicator for stop stepper - GREEN LED
 
 // Stepper Motor pin definitions:
 #define motorPin1  8      // IN1 on the ULN2003 driver
@@ -35,7 +34,10 @@
 #define motorPin4  11     // IN4 on the ULN2003 driver
 
 // initialize variables
-int car_count = 0; // Count variable for optic_Sensor_2
+uint16_t delay_1 = 5000; // 5 sek. delay
+uint16_t delay_2 = 10000; // 10 sek. delay
+uint16_t delay_3 = 15000; // 15 sek. delay
+
 int stepper_pos = 0; // status of stepper motor position
 
 int stepM_speed_right = 200; // speed for moving clockwise (right)
@@ -97,29 +99,50 @@ void setup() {
 
   Serial.begin(9600); // setup and start serial communication default Tx0 / Rx0
 
-  pinMode(optic_Sensor_1, INPUT);
-  pinMode(car_Sensor, INPUT);
-
-  pinMode(stop_start_car, OUTPUT);
-  pinMode(LED_stepper_move, OUTPUT);
-  pinMode(LED_stepper_stop, OUTPUT);
-  
+  pinMode(optic_Sensor_1, INPUT); // pin 2 - external PULLDOWN resistor
+  pinMode(stop_start_car, OUTPUT);   // Pin 4
+  pinMode(LED_stepper_move, OUTPUT); // Pin 5
+  pinMode(LED_stepper_stop, OUTPUT); // Pin 6
+    
   stepper.setMaxSpeed(500); // max speed for stepper motor
 
   digitalWrite(LED_stepper_move, LOW); // set LED IN OFF
   digitalWrite(LED_stepper_stop, HIGH); // set LED IN ON
-
-  car_count = 0;   // set variable to 0
-  stepper_pos = 0; // set variable to 0
-
   
-  // MOVE STEPPER RIGHT UNTIL OPTICAL SENSOR == HIGH
+  stepper_pos = 0; // set variable to 0
+  
+  // move stepper to start position
+  // MOVE STEPPER RIGHT UNTIL OPTICAL SENSOR == LOW
   move_right(stepM_speed_right); // call move right function
 
-}
+} // END void setup
 
 void loop() {
-  
-car_count = digitalRead(car_Sensor);
+  delay(delay_2);
 
-}
+  digitalWrite(stop_start_car, HIGH); // stop car
+  move_left(stepM_speed_left, stepM_steps_left); // move intersection left
+  delay(delay_1);
+  digitalWrite(stop_start_car, LOW); // start car
+
+  delay(delay_2);
+
+  digitalWrite(stop_start_car, HIGH); // stop car
+  move_left(stepM_speed_left, stepM_steps_left); // move intersection left
+  delay(delay_1);
+  digitalWrite(stop_start_car, LOW); // start car
+
+  delay(delay_2);
+
+  digitalWrite(stop_start_car, HIGH); // stop car
+  move_right(stepM_speed_right); // move intersection right
+  delay(delay_1);
+  digitalWrite(stop_start_car, LOW); // start car
+
+  delay(delay_1);
+
+} // END MAIN void loop
+
+/* Description
+  Description comming soon
+*/
