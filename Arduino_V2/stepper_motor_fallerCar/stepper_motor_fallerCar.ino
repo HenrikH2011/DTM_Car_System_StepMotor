@@ -34,16 +34,16 @@ const byte LED_stepper_stop = 6; // LED indicator for stop stepper - GREEN LED
 #define motorPin4  11     // IN4 on the ULN2003 driver
 
 // initialize variables
-uint16_t delay_1 = 5000; // 5 sek. delay
-uint16_t delay_2 = 10000; // 10 sek. delay
-uint16_t delay_3 = 15000; // 15 sek. delay
+uint16_t delay_1 = 1000; // n sek. delay
+uint16_t delay_2 = 1500; // n sek. delay
+uint16_t delay_3 = 2000; // n sek. delay
 
 int stepper_pos = 0; // status of stepper motor position
 
 int stepM_speed_right = 200; // speed for moving clockwise (right)
 
-int stepM_speed_left = 200; // Speed for moving counter-clockwise (left)
-int stepM_steps_left = -4096; // counts of steps counter-clockwise (left)
+int stepM_speed_left = -200; // Speed for moving counter-clockwise (left)
+int stepM_steps_left = -1024; // counts of steps counter-clockwise (left)
 
 // STEPPER MOTOR CONTROL
 // Define the AccelStepper interface type; 4 wire motor in half step mode:
@@ -113,32 +113,49 @@ void setup() {
   
   // move stepper to start position
   // MOVE STEPPER RIGHT UNTIL OPTICAL SENSOR == LOW
+  Serial.println("move right start");
   move_right(stepM_speed_right); // call move right function
+  Serial.println("move right slut");
 
 } // END void setup
 
 void loop() {
+  Serial.println("delay start main loop");
   delay(delay_2);
 
+  Serial.println("stop car");
   digitalWrite(stop_start_car, HIGH); // stop car
+  Serial.println("move left start");
+  move_left(stepM_speed_left, stepM_steps_left); // move intersection left
+  Serial.println("move right stop");
+  delay(delay_1);
+  Serial.println("start car");
+  digitalWrite(stop_start_car, LOW); // start car
+  
+  Serial.println("delay");
+  delay(delay_2);
+
+  Serial.println("stop car");
+  digitalWrite(stop_start_car, HIGH); // stop car
+  Serial.println("move left 2. time");
   move_left(stepM_speed_left, stepM_steps_left); // move intersection left
   delay(delay_1);
+  Serial.println("start car");
   digitalWrite(stop_start_car, LOW); // start car
 
+  Serial.println("delay");
   delay(delay_2);
 
+  Serial.println("stop car");
   digitalWrite(stop_start_car, HIGH); // stop car
-  move_left(stepM_speed_left, stepM_steps_left); // move intersection left
-  delay(delay_1);
-  digitalWrite(stop_start_car, LOW); // start car
-
-  delay(delay_2);
-
-  digitalWrite(stop_start_car, HIGH); // stop car
+  Serial.println("move right");
   move_right(stepM_speed_right); // move intersection right
+  Serial.println("delay");
   delay(delay_1);
+  Serial.println("start car");
   digitalWrite(stop_start_car, LOW); // start car
-
+  
+  Serial.println("delay");
   delay(delay_1);
 
 } // END MAIN void loop
