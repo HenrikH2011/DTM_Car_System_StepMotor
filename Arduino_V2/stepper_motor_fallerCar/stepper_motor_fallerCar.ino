@@ -21,13 +21,12 @@
 
 // Optical Sensor pin definition:
 #define optic_Sensor_1 2 //optical Sensor on Pin 2 - start position
-#define optic_Sensor_2 3 //optical Sensor on Pin 3 - Car count
-#define stop_start_car 4 //Faccer-Car start/stop signal Pin
+#define car_Sensor 3 //Sensor on Pin 3 for Car count - SKAL FLYTTES TIL INTERRUPT PIN
+#define stop_start_car 4 //Faller-Car start/stop signal Pin
 
 // LED for visual indication of movement:
-#define LED_right 5  // LED indicator for moving stepper right
-#define LED_center 6 // LED indicator for moving stepper to center
-#define LED_left 7   // LED indicator for moving stepper left
+#define LED_stepper_move 5  // LED indicator for moving stepper - RED LED
+#define LED_stepper_stop 6 // LED indicator for stop stepper - GREEN LED
 
 // Stepper Motor pin definitions:
 #define motorPin1  8      // IN1 on the ULN2003 driver
@@ -36,14 +35,12 @@
 #define motorPin4  11     // IN4 on the ULN2003 driver
 
 // initialize variables
-int Car_count = 0; // Count variable for optic_Sensor_2
+int car_count = 0; // Count variable for optic_Sensor_2
 int stepper_pos = 0; // status of stepper motor position
-int pushb_F1 = HIGH; // status variable for stepper Motor pushbutton
 
-int stepM_speed_right = 500; // speed for moving clockwise (right)
-// int stepM_steps_right = 4096; // counts of steps clockwise (right) NOT IN USE
+int stepM_speed_right = 200; // speed for moving clockwise (right)
 
-int stepM_speed_left = -500; // Speed for moving counter-clockwise (left)
+int stepM_speed_left = 200; // Speed for moving counter-clockwise (left)
 int stepM_steps_left = -4096; // counts of steps counter-clockwise (left)
 
 // STEPPER MOTOR CONTROL
@@ -55,7 +52,8 @@ AccelStepper stepper = AccelStepper(MotorInterfaceType, motorPin1, motorPin3, mo
 
 // FUNCTION to move right
 void move_right(int stepM_speed_right){
-  digitalWrite(LED_right, HIGH); // set LED ON
+  digitalWrite(LED_stepper_move, HIGH); // set LED ON
+  digitalWrite(LED_stepper_stop, LOW); // set LED OFF
   
   // Set the current position to 0:
   stepper.setCurrentPosition(0);
@@ -68,25 +66,28 @@ void move_right(int stepM_speed_right){
   stepper.stop(); // stop stepper motor when optical sensor == LOW
   stepper.setCurrentPosition(0); // set position to 0 (start positition)
 
-  digitalWrite(LED_right, LOW); // set LED right OFF
+  digitalWrite(LED_stepper_move, LOW); // set LED OFF
+  digitalWrite(LED_stepper_stop, HIGH); // set LED ON
 
 } // FUNCTION RIGHT END --------------------------------------------
 
 // FUNCTION to move left
 void move_left(int stepM_speed_left, int stepM_steps_left){
-  digitalWrite(LED_center, HIGH); // set LED IN ON
+  digitalWrite(LED_stepper_move, HIGH); // set LED ON
+  digitalWrite(LED_stepper_stop, LOW); // set LED OFF
   
   // Reset the position to 0:
   stepper.setCurrentPosition(0); // set stepper start position 
   // Run the motor counter clockwise at x steps/second until the motor reaches -y steps (z revolution) DOWN/CLOSE : 
-  while (stepper.currentPosition() != -4096  ){ // run stepper motor until optical sensor goes LOW
+  while (stepper.currentPosition() != stepM_steps_left){ // run stepper motor until optical sensor goes LOW
     stepper.setSpeed(stepM_speed_left);
     stepper.runSpeed();
   }
 
   stepper.stop(); // stop stepper motor
 
-  digitalWrite(LED_center, LOW); // set LED IN OFF
+  digitalWrite(LED_stepper_move, LOW); // set LED OFF
+  digitalWrite(LED_stepper_stop, HIGH); // set LED ON
 
 } //function END -----------------------------------------------
 
@@ -97,17 +98,20 @@ void setup() {
   Serial.begin(9600); // setup and start serial communication default Tx0 / Rx0
 
   pinMode(optic_Sensor_1, INPUT);
-  pinMode(optic_Sensor_2, INPUT);
-  pinMode(stop_start_car, OUTPUT);
-  pinMode(LED_right, OUTPUT);
-  pinMode(LED_center, OUTPUT);
-  pinMode(LED_left, OUTPUT);
+  pinMode(car_Sensor, INPUT);
 
+  pinMode(stop_start_car, OUTPUT);
+  pinMode(LED_stepper_move, OUTPUT);
+  pinMode(LED_stepper_stop, OUTPUT);
+  
   stepper.setMaxSpeed(500); // max speed for stepper motor
 
-  digitalWrite(LED_right, LOW); // set LED IN OFF
-  digitalWrite(LED_center, LOW); // set LED IN OFF
-  digitalWrite(LED_left, LOW); // set LED IN OFF
+  digitalWrite(LED_stepper_move, LOW); // set LED IN OFF
+  digitalWrite(LED_stepper_stop, HIGH); // set LED IN ON
+
+  car_count = 0;   // set variable to 0
+  stepper_pos = 0; // set variable to 0
+
   
   // MOVE STEPPER RIGHT UNTIL OPTICAL SENSOR == HIGH
   move_right(stepM_speed_right); // call move right function
@@ -116,6 +120,6 @@ void setup() {
 
 void loop() {
   
-
+car_count = digitalRead(car_Sensor);
 
 }
