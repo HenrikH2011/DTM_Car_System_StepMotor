@@ -43,6 +43,7 @@ uint16_t delay_3 = 2000; // n sek. delay
 int stepper_pos = 0; // status of stepper motor position - NOT IN USE
 
 int stepM_speed_right = 200; // speed for moving clockwise (right)
+// int stepM_steps_right = 4096; // speed for moving clockwise (right) - NOT IN USE
 
 int stepM_speed_left = -200; // Speed for moving counter-clockwise (left)
 int stepM_steps_left = -1024; // counts of steps counter-clockwise (left)
@@ -129,8 +130,10 @@ void loop() {
   digitalWrite(stop_start_car, HIGH); // stop car
   Serial.println("move left start");
   move_left(stepM_speed_left, stepM_steps_left); // move intersection left
-  Serial.println("move right stop");
+  Serial.println("move left stop");
+
   delay(delay_1);
+
   Serial.println("start car");
   digitalWrite(stop_start_car, LOW); // start car
   
@@ -141,7 +144,9 @@ void loop() {
   digitalWrite(stop_start_car, HIGH); // stop car
   Serial.println("move left 2. time");
   move_left(stepM_speed_left, stepM_steps_left); // move intersection left
+
   delay(delay_1);
+
   Serial.println("start car");
   digitalWrite(stop_start_car, LOW); // start car
 
@@ -152,6 +157,7 @@ void loop() {
   digitalWrite(stop_start_car, HIGH); // stop car
   Serial.println("move right");
   move_right(stepM_speed_right); // move intersection right
+
   Serial.println("delay");
   delay(delay_1);
   Serial.println("start car");
