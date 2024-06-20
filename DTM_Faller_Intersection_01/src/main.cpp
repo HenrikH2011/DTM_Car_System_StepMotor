@@ -1,7 +1,8 @@
 /* Project: DTM, Gas Silo
-Version: beta 0
+Version: beta 0.1
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
+IDE: VS-Code + PlatformIO
 Library: Accelstepper.h documentation homepage: 
 - https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 
@@ -25,10 +26,10 @@ const int motorPin2 = 10; // NANO digital pin 10, stepMotor - IN2
 const int motorPin3 = 11; // NANO digital pin 11, stepMotor - IN3
 const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 
-int speed_Right = -100; // speed to move stepM counter-clockwise
-int speed_Left = 100;   // speed to move stepM clockwise
+int speed_Right = 100; // speed to move stepM counter-clockwise
+int speed_Left = -100;   // speed to move stepM clockwise
 
-
+char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 
 // Functions and definitions ******************************************************
 
@@ -40,6 +41,20 @@ int speed_Left = 100;   // speed to move stepM clockwise
 // 
 AccelStepper stepper = AccelStepper(MotorInterfaceType, motorPin1, motorPin3, motorPin2, motorPin4);
 
+// Function moveTo_Right
+void moveTo_Right() {
+  
+  stepper.setSpeed(speed_Left);
+  stepper.runToNewPosition(100); // move stepM counter-clockwise
+  delay(100); // 100ms
+
+  stepper.stop();   
+
+  pos_Status = 'R';
+
+  return;
+
+} // END function moveTo_Right
 
 // Function moveTo_Sensor
 // Move stepM right to position = 0 (see optic_sensor)
@@ -47,39 +62,50 @@ void moveTo_Sensor(){
   stepper.setSpeed(speed_Right);
 
   while (digitalRead(optic_sensor) == HIGH) {
-    digitalWrite(LED_standby, LOW);
-    digitalWrite(LED_active, HIGH);
+    
     stepper.runSpeed();
-    delay(100); // 100ms    
-  } // END while
-
-  digitalWrite(LED_standby, HIGH);
-  digitalWrite(LED_active, LOW);
+    
+  } // END while  
 
   stepper.stop();
   stepper.setCurrentPosition(0);
+
+  moveTo_Right();
 
   return;
 
 } // END function moveTo_Sensor
 
-// Function move_Left
-void move_Left() {
+// Function move_Middle
+void moveTo_Middle() {
 
-  digitalWrite(LED_standby, LOW);
-  digitalWrite(LED_active, HIGH);
   stepper.setSpeed(speed_Left);
-  stepper.runToNewPosition(100); // move stepM clockwise
+  stepper.runToNewPosition(200); // move stepM counter-clockwise
   delay(100); // 100ms
 
-  digitalWrite(LED_standby, HIGH);
-  digitalWrite(LED_active, LOW);
   stepper.stop();
+
+  pos_Status = 'M';
+
+  return;
+
+} // END function move_Middle
+
+// Function move_Left
+void moveTo_Left() {
+
+  stepper.setSpeed(speed_Left);
+  stepper.runToNewPosition(300); // move stepM clockwise
+  delay(100); // 100ms
+  
+  stepper.stop();
+
+  pos_Status = 'L';
 
   return;
 } // END function move_Left
 
-
+// END Functions and definitions ************************************************
 
 void setup() {
   Serial.begin(9600);
@@ -98,16 +124,58 @@ void setup() {
   
   if (digitalRead(optic_sensor) == HIGH) {
     moveTo_Sensor();
+
+  }
+  
+  if (digitalRead(optic_sensor) == LOW) {
+    moveTo_Right();
   } // END if
 
-} // END setup
+} // END setup ---------------------------------------------------------------
 
 void loop() {
+  digitalWrite(LED_standby, HIGH);
+  digitalWrite(LED_active, LOW);  
 
   if (digitalRead(pushButton) == HIGH) {
-    move_Left();
-    delay(1000);
+    digitalWrite(LED_standby, LOW);
+    digitalWrite(LED_active, HIGH);
+
+    switch (pos_Status) {
+
+      case 'S':
+
+        moveTo_Right();
+
+        break;
+
+      case 'R':
+
+        moveTo_Middle();
+
+        break;
+
+      case 'M':
+
+        moveTo_Left();
+
+        break;  
+      
+      case 'L':
+        moveTo_Sensor();        
+        
+        break;  
+
+      default:
+
+        // if nothing else matches, do the default
+        // default is optional - just break if no other case matches
+
+        break;      
+
+    } // END switch
+
   } // END if
-  // put your main code here, to run repeatedly:
-}
+  
+} // END loop ----------------------------------------------------------------
 
