@@ -6,6 +6,9 @@ Library: Accelstepper.h documentation homepage:
 - https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 
 This code works with the ULN2003 Stepper Motor Driver Module and the 28BYJ-48 stepper motor
+
+Move stepM clockwise => step speed = 100
+Move stepM counter-clockwise => step speed = -100
 */
 
 #include <Arduino.h>
@@ -22,6 +25,15 @@ const int motorPin2 = 10; // NANO digital pin 10, stepMotor - IN2
 const int motorPin3 = 11; // NANO digital pin 11, stepMotor - IN3
 const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 
+int speed_Right = -100; // counter-clockwise 
+int speed_Left = 100; // clockwise
+
+
+
+// Functions and definitions ******************************************************
+
+// Accellstepper library functions
+
 // accelstepper MotorInterfaceType 8 == DRIVER, to be used with ULN2003 driver module
 #define MotorInterfaceType 8 
 
@@ -30,18 +42,16 @@ const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 AccelStepper stepper = AccelStepper(MotorInterfaceType, motorPin1, motorPin3, motorPin2, motorPin4);
 
 
-
-// Function declarations and definitions **********************************************
-// Move stepM to position = 0 (see optic_sensor)
-void moveTo_Sensor(int, int){
+// Function moveTo_Sensor
+// Move stepM right to position = 0 (see optic_sensor)
+void moveTo_Sensor(){
+  stepper.setSpeed(speed_Right);
 
   while (digitalRead(optic_sensor) == HIGH) {
-
     digitalWrite(LED_standby, LOW);
     digitalWrite(LED_active, HIGH);
-    stepper.run();
-    delay(100); // 100ms
-    
+    stepper.runSpeed();
+    delay(100); // 100ms    
   } // END while
 
   digitalWrite(LED_standby, HIGH);
@@ -53,6 +63,25 @@ void moveTo_Sensor(int, int){
   return;
 
 } // END function moveTo_Sensor
+
+// Function move_Left
+void move_Left() {
+
+  digitalWrite(LED_standby, LOW);
+  digitalWrite(LED_active, HIGH);
+  stepper.setSpeed(speed_Left);
+  stepper.runToNewPosition(100); // move stepM clockwise
+  delay(100); // 100ms
+
+  digitalWrite(LED_standby, HIGH);
+  digitalWrite(LED_active, LOW);
+  stepper.stop();
+
+  return;
+} // END function move_Left
+
+
+
 void setup() {
   Serial.begin(9600);
 
@@ -68,13 +97,18 @@ void setup() {
   stepper.setAcceleration(100);
   // stepper.moveTo(0);
   
-}
+  if (digitalRead(optic_sensor) == HIGH) {
+    moveTo_Sensor();
+  } // END if
+
+} // END setup
 
 void loop() {
+
+  if (digitalRead(pushButton) == HIGH) {
+    move_Left();
+    delay(1000);
+  } // END if
   // put your main code here, to run repeatedly:
 }
 
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
-}
