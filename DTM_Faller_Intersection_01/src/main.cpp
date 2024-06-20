@@ -15,25 +15,24 @@ Move stepM counter-clockwise => step speed = -100
 #include <AccelStepper.h>
 
 const int LED_standby = 2; // NANO digital pin 2, moving NO
-const int LED_active = 3; // NANO digital pin 3, moving YES
+const int LED_active = 3;  // NANO digital pin 3, moving YES
 
 const int optic_sensor = 6; // NANO digital pin 6, Position = 0
-const int pushButton = 7; // NANO digital pin 7, activate (HIGH) move stepMotor
+const int pushButton = 7;   // NANO digital pin 7, activate (HIGH) move stepMotor
 
 const int motorPin1 = 9;  // NANO digital pin 9, stepMotor  - IN1
 const int motorPin2 = 10; // NANO digital pin 10, stepMotor - IN2
 const int motorPin3 = 11; // NANO digital pin 11, stepMotor - IN3
 const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 
-int speed_Right = -100; // counter-clockwise 
-int speed_Left = 100; // clockwise
+int speed_Right = -100; // speed to move stepM counter-clockwise
+int speed_Left = 100;   // speed to move stepM clockwise
 
 
 
 // Functions and definitions ******************************************************
 
 // Accellstepper library functions
-
 // accelstepper MotorInterfaceType 8 == DRIVER, to be used with ULN2003 driver module
 #define MotorInterfaceType 8 
 
