@@ -48,6 +48,10 @@ AccelStepper intersection_3_01 = AccelStepper(MotorInterfaceType, motorPin1, mot
 
 // Function moveTo_Right
 void moveTo_Right() {
+
+  Serial.print("Optic Sensor: ");
+  Serial.println(digitalRead(optic_sensor));
+  Serial.print("moveTo_Right ");
   
   intersection_3_01.setSpeed(speed_CounterClockW);
   intersection_3_01.moveTo(pos_Right);
@@ -67,7 +71,9 @@ void moveTo_Right() {
 void moveTo_Sensor(){
   // intersection_3_01.setSpeed(speed_ClockW);
   // intersection_3_01.move(40000);
-  delay(100);
+  Serial.print("Optic Sensor: ");
+  Serial.println(digitalRead(optic_sensor));
+  Serial.print("moveTo_Sensor ");
 
   while (digitalRead(optic_sensor) == LOW) {
         
@@ -90,6 +96,10 @@ void moveTo_Sensor(){
 // Function move_Middle
 void moveTo_Middle() {
 
+  Serial.print("Optic Sensor: ");
+  Serial.println(digitalRead(optic_sensor));
+  Serial.print("moveTo_Middle ");
+
   intersection_3_01.setSpeed(speed_CounterClockW);
   intersection_3_01.runToNewPosition(200); // move stepM counter-clockwise
   delay(100); // 100ms
@@ -104,6 +114,10 @@ void moveTo_Middle() {
 
 // Function move_Left
 void moveTo_Left() {
+
+  Serial.print("Optic Sensor: ");
+  Serial.println(digitalRead(optic_sensor));
+  Serial.print("moveTo_Left ");
 
   intersection_3_01.setSpeed(speed_CounterClockW);
   intersection_3_01.runToNewPosition(300); // move stepM clockwise
@@ -133,7 +147,7 @@ void setup() {
   intersection_3_01.setAcceleration(100);
   // intersection_3_01.moveTo(0);
 
-  Serial.print("Optic Sensor: ");
+  Serial.print("void setup - Optic Sensor: ");
   Serial.println(digitalRead(optic_sensor));
   
   if (digitalRead(optic_sensor) == LOW) { // StepM not at optic sensor position
@@ -150,6 +164,10 @@ void setup() {
 void loop() {
   digitalWrite(LED_standby, HIGH);
   digitalWrite(LED_active, LOW);  
+
+  Serial.print("Optic Sensor: ");
+  Serial.println(digitalRead(optic_sensor));
+
 
   if (digitalRead(pushButton) == HIGH) {
     digitalWrite(LED_standby, LOW);
