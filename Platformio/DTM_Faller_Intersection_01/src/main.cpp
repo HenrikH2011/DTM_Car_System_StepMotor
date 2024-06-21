@@ -1,5 +1,5 @@
 /* Project: DTM, Faller Car, intersection_3_01
-Version: beta 0.1
+Version: alpha 0.1
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
 IDE: VS-Code + PlatformIO
