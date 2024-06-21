@@ -29,10 +29,10 @@ const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 int speed_CounterClockW = -100; // speed to move stepM counter-clockwise
 int speed_ClockW = 100;  // speed to move stepM clockwise
 
-int pos_Right = 500; // position to move stepM counter-clockwise or clockwise..?
-int pos_Middle = 1000; // position to move stepM counter-clockwise or clockwise..?
-int pos_Left = 1500; // position to move stepM counter-clockwise or clockwise..?
-int pos_Sensor = -2000; // position to move stepM counter-clockwise or clockwise..?
+int pos_Right = -50; // position to move stepM counter-clockwise
+int pos_Middle = -100; // position to move stepM counter-clockwise
+int pos_Left = -150; // position to move stepM counter-clockwise
+int pos_Sensor = 200; // position to move stepM clockwise
 
 char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 
@@ -52,13 +52,22 @@ void moveTo_Right() {
   Serial.print("Optic Sensor: ");
   Serial.println(digitalRead(optic_sensor));
   Serial.print("moveTo_Right ");
-  
-  intersection_3_01.setSpeed(speed_CounterClockW);
-  intersection_3_01.moveTo(pos_Right);
-  intersection_3_01.runToPosition(); // move stepM counter-clockwise
-  delay(100); // 100ms
 
-  intersection_3_01.stop();   
+  intersection_3_01.setSpeed(speed_CounterClockW);
+  
+  while (intersection_3_01.currentPosition() != pos_Right) {
+  Serial.println("moving stepM counter-clockwise"); 
+    
+  intersection_3_01.runToNewPosition(pos_Right); // move stepM counter-clockwise
+  
+  } // END while
+
+  intersection_3_01.stop(); 
+  Serial.println("stop stepM");
+
+  // disable stepper output pin's
+
+  delay(1000);
 
   pos_Status = 'R';
 
@@ -75,17 +84,26 @@ void moveTo_Sensor(){
   Serial.println(digitalRead(optic_sensor));
   Serial.print("moveTo_Sensor ");
 
+  intersection_3_01.setSpeed(speed_ClockW);
+
   while (digitalRead(optic_sensor) == LOW) {
+    
+    intersection_3_01.runSpeed();
         
+    /* comment out for testing 
     intersection_3_01.setSpeed(speed_ClockW);
     intersection_3_01.moveTo(pos_Sensor);
     intersection_3_01.runToPosition(); // move stepM counter-clockwise
     delay(100); // 100ms
-    
+
+    */
+
   } // END while  
 
   intersection_3_01.stop();
   intersection_3_01.setCurrentPosition(0);
+
+  delay(1000);
 
   moveTo_Right();
 
@@ -101,7 +119,7 @@ void moveTo_Middle() {
   Serial.print("moveTo_Middle ");
 
   intersection_3_01.setSpeed(speed_CounterClockW);
-  intersection_3_01.runToNewPosition(200); // move stepM counter-clockwise
+  intersection_3_01.runToNewPosition(pos_Middle); // move stepM counter-clockwise
   delay(100); // 100ms
 
   intersection_3_01.stop();
@@ -155,9 +173,12 @@ void setup() {
 
   }
   
+  /*
   if (digitalRead(optic_sensor) == HIGH) { // StepM at optic sensor position
     moveTo_Right();
   } // END if
+
+  */
 
 } // END setup ---------------------------------------------------------------
 
@@ -168,6 +189,17 @@ void loop() {
   Serial.print("Optic Sensor: ");
   Serial.println(digitalRead(optic_sensor));
 
+  if (digitalRead(pushButton) == HIGH){
+    Serial.println("pushB: HIGH ");
+    
+    moveTo_Middle();
+    
+
+  }
+
+
+
+/*
 
   if (digitalRead(pushButton) == HIGH) {
     digitalWrite(LED_standby, LOW);
@@ -208,6 +240,8 @@ void loop() {
     } // END switch
 
   } // END if
+
+  */
   
 } // END loop ----------------------------------------------------------------
 
