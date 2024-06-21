@@ -10,3 +10,5 @@ URL link: https://github.com/adafruit/AccelStepper/tree/master
 
 The mission manual by doctek, on hackaday
 URL link: https://hackaday.io/project/183279-accelstepper-the-missing-manual/details
+
+Linux Debian-12, Visual Studio Code, Platformio, Codeium AI
