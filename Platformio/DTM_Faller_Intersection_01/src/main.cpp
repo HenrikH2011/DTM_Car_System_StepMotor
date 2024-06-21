@@ -34,21 +34,20 @@ char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 // Functions and definitions ******************************************************
 
 // Accellstepper library functions
-// accelstepper MotorInterfaceType 8 == DRIVER, to be used with ULN2003 driver module
-#define MotorInterfaceType 8 
-
+// accelstepper MotorInterfaceType 4 == FULL4WIRE, to be used with ULN2003 driver module
+#define MotorInterfaceType 4
 // ULN2003 and 28BYJ-48 stepper motor connections, IN1, IN3,  IN2, IN4
-// 
-AccelStepper stepper = AccelStepper(MotorInterfaceType, motorPin1, motorPin3, motorPin2, motorPin4);
+
+AccelStepper intersection_3_01 = AccelStepper(MotorInterfaceType, motorPin1, motorPin3, motorPin2, motorPin4);
 
 // Function moveTo_Right
 void moveTo_Right() {
   
-  stepper.setSpeed(speed_Left);
-  stepper.runToNewPosition(100); // move stepM counter-clockwise
+  intersection_3_01.setSpeed(speed_Left);
+  intersection_3_01.runToNewPosition(100); // move stepM counter-clockwise
   delay(100); // 100ms
 
-  stepper.stop();   
+  intersection_3_01.stop();   
 
   pos_Status = 'R';
 
@@ -59,16 +58,16 @@ void moveTo_Right() {
 // Function moveTo_Sensor
 // Move stepM right to position = 0 (see optic_sensor)
 void moveTo_Sensor(){
-  stepper.setSpeed(speed_Right);
+  intersection_3_01.setSpeed(speed_Right);
 
   while (digitalRead(optic_sensor) == HIGH) {
     
-    stepper.runSpeed();
+    intersection_3_01.runSpeed();
     
   } // END while  
 
-  stepper.stop();
-  stepper.setCurrentPosition(0);
+  intersection_3_01.stop();
+  intersection_3_01.setCurrentPosition(0);
 
   moveTo_Right();
 
@@ -79,11 +78,11 @@ void moveTo_Sensor(){
 // Function move_Middle
 void moveTo_Middle() {
 
-  stepper.setSpeed(speed_Left);
-  stepper.runToNewPosition(200); // move stepM counter-clockwise
+  intersection_3_01.setSpeed(speed_Left);
+  intersection_3_01.runToNewPosition(200); // move stepM counter-clockwise
   delay(100); // 100ms
 
-  stepper.stop();
+  intersection_3_01.stop();
 
   pos_Status = 'M';
 
@@ -94,11 +93,11 @@ void moveTo_Middle() {
 // Function move_Left
 void moveTo_Left() {
 
-  stepper.setSpeed(speed_Left);
-  stepper.runToNewPosition(300); // move stepM clockwise
+  intersection_3_01.setSpeed(speed_Left);
+  intersection_3_01.runToNewPosition(300); // move stepM clockwise
   delay(100); // 100ms
   
-  stepper.stop();
+  intersection_3_01.stop();
 
   pos_Status = 'L';
 
@@ -118,9 +117,9 @@ void setup() {
   digitalWrite(LED_standby, HIGH);
   digitalWrite(LED_active, LOW);
 
-  stepper.setMaxSpeed(500);
-  stepper.setAcceleration(100);
-  // stepper.moveTo(0);
+  intersection_3_01.setMaxSpeed(500);
+  intersection_3_01.setAcceleration(100);
+  // intersection_3_01.moveTo(0);
   
   if (digitalRead(optic_sensor) == HIGH) {
     moveTo_Sensor();
