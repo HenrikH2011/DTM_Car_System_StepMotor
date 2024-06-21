@@ -1,4 +1,4 @@
-/* Project: DTM, Gas Silo
+/* Project: DTM, Faller Car, intersection_3_01
 Version: beta 0.1
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
@@ -8,8 +8,10 @@ Library: Accelstepper.h documentation homepage:
 
 This code works with the ULN2003 Stepper Motor Driver Module and the 28BYJ-48 stepper motor
 
-Move stepM clockwise => step speed = 100
-Move stepM counter-clockwise => step speed = -100
+NOTE: 
+SerialMonitor: moserial Terminal, Databit 8, Stop Bit 1, Parity None, Handshake Software, Local Echo ON
+baudrate: 9600 (Set as Serial.begin(9600);)
+
 */
 
 #include <Arduino.h>
@@ -29,10 +31,12 @@ const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 int speed_CounterClockW = -100; // speed to move stepM counter-clockwise
 int speed_ClockW = 100;  // speed to move stepM clockwise
 
-int pos_Right = -50; // position to move stepM counter-clockwise
-int pos_Middle = -100; // position to move stepM counter-clockwise
-int pos_Left = -150; // position to move stepM counter-clockwise
+int pos_Right = -100; // position to move stepM counter-clockwise
+int pos_Middle = -200; // position to move stepM counter-clockwise
+int pos_Left = -300; // position to move stepM counter-clockwise
 int pos_Sensor = 200; // position to move stepM clockwise
+
+int serial_Print_Count = 0;
 
 char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 
@@ -54,9 +58,10 @@ void moveTo_Right() {
   Serial.print("moveTo_Right ");
 
   intersection_3_01.setSpeed(speed_CounterClockW);
-  
-  while (intersection_3_01.currentPosition() != pos_Right) {
   Serial.println("moving stepM counter-clockwise"); 
+  Serial.println("");
+  
+  while (intersection_3_01.currentPosition() != pos_Right) {  
     
   intersection_3_01.runToNewPosition(pos_Right); // move stepM counter-clockwise
   
@@ -64,6 +69,7 @@ void moveTo_Right() {
 
   intersection_3_01.stop(); 
   Serial.println("stop stepM");
+  Serial.println("");
 
   // disable stepper output pin's
 
@@ -75,42 +81,6 @@ void moveTo_Right() {
 
 } // END function moveTo_Right
 
-// Function moveTo_Sensor
-// Move stepM right to position = 0 (see optic_sensor)
-void moveTo_Sensor(){
-  // intersection_3_01.setSpeed(speed_ClockW);
-  // intersection_3_01.move(40000);
-  Serial.print("Optic Sensor: ");
-  Serial.println(digitalRead(optic_sensor));
-  Serial.print("moveTo_Sensor ");
-
-  intersection_3_01.setSpeed(speed_ClockW);
-
-  while (digitalRead(optic_sensor) == LOW) {
-    
-    intersection_3_01.runSpeed();
-        
-    /* comment out for testing 
-    intersection_3_01.setSpeed(speed_ClockW);
-    intersection_3_01.moveTo(pos_Sensor);
-    intersection_3_01.runToPosition(); // move stepM counter-clockwise
-    delay(100); // 100ms
-
-    */
-
-  } // END while  
-
-  intersection_3_01.stop();
-  intersection_3_01.setCurrentPosition(0);
-
-  delay(1000);
-
-  moveTo_Right();
-
-  return;
-
-} // END function moveTo_Sensor
-
 // Function move_Middle
 void moveTo_Middle() {
 
@@ -119,10 +89,18 @@ void moveTo_Middle() {
   Serial.print("moveTo_Middle ");
 
   intersection_3_01.setSpeed(speed_CounterClockW);
+  Serial.println("moving stepM counter-clockwise"); 
+  Serial.println("");
+
+  while (intersection_3_01.currentPosition() != pos_Middle) {  
+    
   intersection_3_01.runToNewPosition(pos_Middle); // move stepM counter-clockwise
-  delay(100); // 100ms
+  
+  } // END while
 
   intersection_3_01.stop();
+  Serial.println("stop stepM");
+  Serial.println("");
 
   pos_Status = 'M';
 
@@ -138,15 +116,56 @@ void moveTo_Left() {
   Serial.print("moveTo_Left ");
 
   intersection_3_01.setSpeed(speed_CounterClockW);
-  intersection_3_01.runToNewPosition(300); // move stepM clockwise
-  delay(100); // 100ms
+  Serial.println("moving stepM counter-clockwise");
+  Serial.println("");
+  
+  while (intersection_3_01.currentPosition() != pos_Left) {  
+    
+  intersection_3_01.runToNewPosition(pos_Left); // move stepM counter-clockwise
+  
+  } // END while
   
   intersection_3_01.stop();
+  Serial.println("stop stepM");
+  Serial.println("");
 
   pos_Status = 'L';
 
   return;
 } // END function move_Left
+
+// Function moveTo_Sensor
+// Move stepM right to position = 0 (see optic_sensor)
+void moveTo_Sensor(){
+  // intersection_3_01.setSpeed(speed_ClockW);
+  // intersection_3_01.move(40000);
+  Serial.print("Optic Sensor: ");
+  Serial.println(digitalRead(optic_sensor));
+  Serial.print("moveTo_Sensor ");
+
+  intersection_3_01.setSpeed(speed_ClockW);
+  Serial.println("moving stepM clockwise");
+  Serial.println("");
+
+  while (digitalRead(optic_sensor) == LOW) {    
+
+    intersection_3_01.runSpeed();
+
+  } // END while  
+
+  intersection_3_01.stop();
+  intersection_3_01.setCurrentPosition(0);
+  Serial.println("setCurrentPosition(0)");
+  Serial.println("stop stepM");
+  Serial.println("");
+
+  delay(1000);
+
+  moveTo_Middle();
+
+  return;
+
+} // END function moveTo_Sensor
 
 // END Functions and definitions ************************************************
 
@@ -167,18 +186,19 @@ void setup() {
 
   Serial.print("void setup - Optic Sensor: ");
   Serial.println(digitalRead(optic_sensor));
+  Serial.println("");
   
   if (digitalRead(optic_sensor) == LOW) { // StepM not at optic sensor position
     moveTo_Sensor();
 
   }
   
-  /*
+  
   if (digitalRead(optic_sensor) == HIGH) { // StepM at optic sensor position
-    moveTo_Right();
+    moveTo_Middle();
   } // END if
 
-  */
+  
 
 } // END setup ---------------------------------------------------------------
 
@@ -186,22 +206,25 @@ void loop() {
   digitalWrite(LED_standby, HIGH);
   digitalWrite(LED_active, LOW);  
 
-  Serial.print("Optic Sensor: ");
-  Serial.println(digitalRead(optic_sensor));
-
-  if (digitalRead(pushButton) == HIGH){
-    Serial.println("pushB: HIGH ");
-    
-    moveTo_Middle();
-    
-
+  if (serial_Print_Count == 0) {
+    Serial.print("Optic Sensor: ");
+    Serial.println(digitalRead(optic_sensor));
+    serial_Print_Count = 1;
+    Serial.print("pushButton: ");
+    Serial.println(digitalRead(pushButton));
+    Serial.println("");
   }
 
-
-
-/*
-
+  
   if (digitalRead(pushButton) == HIGH) {
+    Serial.print("pushButton: ");
+    Serial.println(digitalRead(pushButton));
+
+    serial_Print_Count = 0;    
+    Serial.print("Optic Sensor: ");
+    Serial.println(digitalRead(optic_sensor));
+    Serial.println("");    
+
     digitalWrite(LED_standby, LOW);
     digitalWrite(LED_active, HIGH);
 
@@ -209,7 +232,7 @@ void loop() {
 
       case 'S':
 
-        moveTo_Right();
+        moveTo_Middle();
 
         break;
 
@@ -226,7 +249,7 @@ void loop() {
         break;  
       
       case 'L':
-        moveTo_Sensor();        
+        moveTo_Right();        
         
         break;  
 
@@ -240,8 +263,6 @@ void loop() {
     } // END switch
 
   } // END if
-
-  */
-  
+ 
 } // END loop ----------------------------------------------------------------
 
