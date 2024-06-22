@@ -31,10 +31,10 @@ const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 int speed_CounterClockW = -100; // speed to move stepM counter-clockwise
 int speed_ClockW = 100;  // speed to move stepM clockwise
 
-int pos_Right = -100; // position to move stepM counter-clockwise
-int pos_Middle = -200; // position to move stepM counter-clockwise
-int pos_Left = -300; // position to move stepM counter-clockwise
-int pos_Sensor = 200; // position to move stepM clockwise
+int pos_Right = 0; // position to move stepM counter-clockwise
+int pos_Middle = -165; // position to move stepM counter-clockwise
+int pos_Left = -360; // position to move stepM counter-clockwise
+int pos_Sensor = 0; // position to move stepM clockwise
 
 int serial_Print_Count = 0;
 
@@ -159,9 +159,8 @@ void moveTo_Sensor(){
   Serial.println("stop stepM");
   Serial.println("");
 
-  delay(1000);
-
-  moveTo_Middle();
+  // moveTo_Middle(); // This not to be used here
+  pos_Status = 'R'; // pos R == Sensor position
 
   return;
 
@@ -195,8 +194,9 @@ void setup() {
   
   
   if (digitalRead(optic_sensor) == HIGH) { // StepM at optic sensor position
-    moveTo_Middle();
+    pos_Status = 'R';
   } // END if
+  
 
   
 
@@ -214,7 +214,6 @@ void loop() {
     Serial.println(digitalRead(pushButton));
     Serial.println("");
   }
-
   
   if (digitalRead(pushButton) == HIGH) {
     Serial.print("pushButton: ");
@@ -230,7 +229,7 @@ void loop() {
 
     switch (pos_Status) {
 
-      case 'S':
+      case 'S': // This not to be used here
 
         moveTo_Middle();
 
@@ -249,7 +248,8 @@ void loop() {
         break;  
       
       case 'L':
-        moveTo_Right();        
+        // moveTo_Right(); // This not to be used here. Changed to moveTO_sensor
+        moveTo_Sensor(); // Right Lane
         
         break;  
 
