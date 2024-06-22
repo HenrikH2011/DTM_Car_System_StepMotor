@@ -1,5 +1,5 @@
 /* Project: DTM, Faller Car, intersection_3_01
-Version: alpha 0.1
+Version: alpha 0.2 NOTE: (Cleanup code, Add comments)
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
 IDE: VS-Code + PlatformIO
@@ -50,7 +50,8 @@ char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 
 AccelStepper intersection_3_01 = AccelStepper(MotorInterfaceType, motorPin1, motorPin3, motorPin2, motorPin4);
 
-// Function moveTo_Right
+// Function moveTo_Right // IS NOT USED. moveTo_Sensor IS CHANGED TO RIGHT LANE
+/*
 void moveTo_Right() {
 
   Serial.print("Optic Sensor: ");
@@ -80,6 +81,7 @@ void moveTo_Right() {
   return;
 
 } // END function moveTo_Right
+*/
 
 // Function move_Middle
 void moveTo_Middle() {
