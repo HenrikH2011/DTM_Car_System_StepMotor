@@ -134,7 +134,7 @@ void moveTo_Left() {
   return;
 } // END function move_Left
 
-// Function moveTo_Sensor
+// Function moveTo_Sensor CHANGE THIS TO RIGHT LANE
 // Move stepM right to position = 0 (see optic_sensor)
 void moveTo_Sensor(){
   // intersection_3_01.setSpeed(speed_ClockW);
