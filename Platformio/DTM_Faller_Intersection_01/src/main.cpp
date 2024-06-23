@@ -1,5 +1,5 @@
 /* Project: DTM, Faller Car, intersection_3_01
-Version: alpha 0.2 NOTE: (Cleanup code, Add comments)
+Version: RC 1.0 NOTE: (Cleanup code, Add comments)
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
 IDE: VS-Code + PlatformIO
@@ -147,8 +147,8 @@ void moveTo_Sensor(){
   Serial.println("moving stepM clockwise");
   Serial.println("");
 
-  while (digitalRead(optic_sensor) == LOW) {    
-
+  while (digitalRead(optic_sensor) == LOW) {
+    // move stepM clockwise until pos_Sensor
     intersection_3_01.runSpeed();
 
   } // END while  
