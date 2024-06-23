@@ -1,4 +1,4 @@
-/* Project: DTM, Faller Car, intersection_3_01
+/* Project: DTM, Faller Car, intersection_3_01 (_3: 3 Lane road. _01: Intersection nr. 1)
 Version: RC 1.0 NOTE: (Cleanup code, Add comments)
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
