@@ -1,5 +1,5 @@
 /* Project: DTM, Faller Car, intersection_3_01
-Version: alpha 0.1
+Version: alpha 0.2 NOTE: (Cleanup code, Add comments)
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
 IDE: VS-Code + PlatformIO
@@ -31,10 +31,10 @@ const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 int speed_CounterClockW = -100; // speed to move stepM counter-clockwise
 int speed_ClockW = 100;  // speed to move stepM clockwise
 
-int pos_Right = -100; // position to move stepM counter-clockwise
-int pos_Middle = -200; // position to move stepM counter-clockwise
-int pos_Left = -300; // position to move stepM counter-clockwise
-int pos_Sensor = 200; // position to move stepM clockwise
+int pos_Right = 0; // position to move stepM counter-clockwise
+int pos_Middle = -165; // position to move stepM counter-clockwise
+int pos_Left = -360; // position to move stepM counter-clockwise
+int pos_Sensor = 0; // position to move stepM clockwise
 
 int serial_Print_Count = 0;
 
@@ -50,7 +50,8 @@ char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 
 AccelStepper intersection_3_01 = AccelStepper(MotorInterfaceType, motorPin1, motorPin3, motorPin2, motorPin4);
 
-// Function moveTo_Right
+// Function moveTo_Right // IS NOT USED. moveTo_Sensor IS CHANGED TO RIGHT LANE
+/*
 void moveTo_Right() {
 
   Serial.print("Optic Sensor: ");
@@ -80,6 +81,7 @@ void moveTo_Right() {
   return;
 
 } // END function moveTo_Right
+*/
 
 // Function move_Middle
 void moveTo_Middle() {
@@ -134,7 +136,7 @@ void moveTo_Left() {
   return;
 } // END function move_Left
 
-// Function moveTo_Sensor
+// Function moveTo_Sensor CHANGE THIS TO RIGHT LANE
 // Move stepM right to position = 0 (see optic_sensor)
 void moveTo_Sensor(){
   // intersection_3_01.setSpeed(speed_ClockW);
@@ -159,9 +161,8 @@ void moveTo_Sensor(){
   Serial.println("stop stepM");
   Serial.println("");
 
-  delay(1000);
-
-  moveTo_Middle();
+  // moveTo_Middle(); // This not to be used here
+  pos_Status = 'R'; // pos R == Sensor position
 
   return;
 
@@ -195,8 +196,9 @@ void setup() {
   
   
   if (digitalRead(optic_sensor) == HIGH) { // StepM at optic sensor position
-    moveTo_Middle();
+    pos_Status = 'R';
   } // END if
+  
 
   
 
@@ -214,7 +216,6 @@ void loop() {
     Serial.println(digitalRead(pushButton));
     Serial.println("");
   }
-
   
   if (digitalRead(pushButton) == HIGH) {
     Serial.print("pushButton: ");
@@ -230,7 +231,7 @@ void loop() {
 
     switch (pos_Status) {
 
-      case 'S':
+      case 'S': // This not to be used here
 
         moveTo_Middle();
 
@@ -249,7 +250,8 @@ void loop() {
         break;  
       
       case 'L':
-        moveTo_Right();        
+        // moveTo_Right(); // This not to be used here. Changed to moveTO_sensor
+        moveTo_Sensor(); // Right Lane
         
         break;  
 
