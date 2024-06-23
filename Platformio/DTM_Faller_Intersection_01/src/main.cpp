@@ -43,8 +43,8 @@ char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 // Functions and definitions ******************************************************
 
 // Accellstepper library functions
-// accelstepper MotorInterfaceType 4 == FULL4WIRE, full-step to be used with ULN2003 driver module
-// accelstepper MotorInterfaceType 8 == HALF4WIRE, half-step to be used with 28BYJ-48 stepper motor
+// accelstepper MotorInterfaceType 4 == FULL4WIRE: full-step or half-step to be used with ULN2003 driver
+// accelstepper MotorInterfaceType 8 == HALF4WIRE: module and 28BYJ-48 stepper motor
 #define MotorInterfaceType 4
 // ULN2003 and 28BYJ-48 stepper motor connections, IN1, IN3,  IN2, IN4
 
@@ -95,8 +95,8 @@ void moveTo_Middle() {
   Serial.println("");
 
   while (intersection_3_01.currentPosition() != pos_Middle) {  
-    
-  intersection_3_01.runToNewPosition(pos_Middle); // move stepM counter-clockwise
+    // move stepM counter-clockwise until pos_Middle  
+    intersection_3_01.runToNewPosition(pos_Middle); 
   
   } // END while
 
@@ -104,7 +104,7 @@ void moveTo_Middle() {
   Serial.println("stop stepM");
   Serial.println("");
 
-  pos_Status = 'M';
+  pos_Status = 'M'; // pos M == Middle
 
   return;
 
@@ -122,8 +122,8 @@ void moveTo_Left() {
   Serial.println("");
   
   while (intersection_3_01.currentPosition() != pos_Left) {  
-    
-  intersection_3_01.runToNewPosition(pos_Left); // move stepM counter-clockwise
+    // move stepM counter-clockwise until pos_Left  
+    intersection_3_01.runToNewPosition(pos_Left); 
   
   } // END while
   
@@ -131,7 +131,7 @@ void moveTo_Left() {
   Serial.println("stop stepM");
   Serial.println("");
 
-  pos_Status = 'L';
+  pos_Status = 'L'; // pos L == Left
 
   return;
 } // END function move_Left
@@ -139,8 +139,6 @@ void moveTo_Left() {
 // Function moveTo_Sensor CHANGE THIS TO RIGHT LANE
 // Move stepM right to position = 0 (see optic_sensor)
 void moveTo_Sensor(){
-  // intersection_3_01.setSpeed(speed_ClockW);
-  // intersection_3_01.move(40000);
   Serial.print("Optic Sensor: ");
   Serial.println(digitalRead(optic_sensor));
   Serial.print("moveTo_Sensor ");
@@ -190,17 +188,13 @@ void setup() {
   Serial.println("");
   
   if (digitalRead(optic_sensor) == LOW) { // StepM not at optic sensor position
-    moveTo_Sensor();
+    moveTo_Sensor(); // move to sensor position
 
-  }
-  
+  }  
   
   if (digitalRead(optic_sensor) == HIGH) { // StepM at optic sensor position
-    pos_Status = 'R';
+    pos_Status = 'R'; // pos R == Sensor position
   } // END if
-  
-
-  
 
 } // END setup ---------------------------------------------------------------
 
@@ -256,15 +250,12 @@ void loop() {
         break;  
 
       default:
-
         // if nothing else matches, do the default
         // default is optional - just break if no other case matches
-
         break;      
-
     } // END switch
 
   } // END if
  
-} // END loop ----------------------------------------------------------------
-
+} // END void loop ----------------------------------------------------------------
+// END OF CODE
