@@ -28,8 +28,8 @@ const int motorPin2 = 10; // NANO digital pin 10, stepMotor - IN2
 const int motorPin3 = 11; // NANO digital pin 11, stepMotor - IN3
 const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 
-int speed_CounterClockW = -100; // speed to move stepM counter-clockwise
-int speed_ClockW = 100;  // speed to move stepM clockwise
+int speed_CounterClockW = -100; // speed to move stepM // counter-clockwise move around
+int speed_ClockW = 100;  // speed to move stepM // clockwise move around
 
 int pos_Right = 0; // position to move stepM counter-clockwise
 int pos_Middle = -165; // position to move stepM counter-clockwise
@@ -143,7 +143,7 @@ void moveTo_Sensor(){
   Serial.println(digitalRead(optic_sensor));
   Serial.print("moveTo_Sensor ");
 
-  intersection_3_01.setSpeed(speed_ClockW);
+  intersection_3_01.setSpeed(speed_CounterClockW);
   Serial.println("moving stepM clockwise");
   Serial.println("");
 
