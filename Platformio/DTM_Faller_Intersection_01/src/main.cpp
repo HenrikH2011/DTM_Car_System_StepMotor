@@ -1,16 +1,24 @@
 /* Project: DTM, Faller Car, intersection_3_01 (_3: 3 Lane road. _01: Intersection nr. 1)
-Version: RC 1.1 NOTE: (Cleanup code, Add comments)
+Version: RC 1.2 NOTE: code for testing only in testing phase
 Dev: HH
+Test setup: FFS, HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
-IDE: VS-Code + PlatformIO
+IDE: VS-Code (Microsoft) + PlatformIO
+AI: Codeium extension for Visual Studio Code
 Library: Accelstepper.h documentation homepage: 
 - https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 
 This code works with the ULN2003 Stepper Motor Driver Module and the 28BYJ-48 stepper motor
+When StepM not in use the accelstepper disableOutputs() function is used to set all output pin to LOW,
+to save power, avoid the stepM is getting hot and then last longer.
 
 NOTE: 
 SerialMonitor: moserial Terminal, Databit 8, Stop Bit 1, Parity None, Handshake Software, Local Echo ON
 baudrate: 9600 (Set as Serial.begin(9600);)
+Serial print only used for testing feedback
+
+Arduino NANO extension shield: Find and check datasheet - Power IN jack connector. 
+Do not work properly with 7.5 VDC, work with 9VDC external power supply ??  
 
 Optical sensor module signal (D0) is inverted on module. LOW signal when IR sensor is on.
 
@@ -36,14 +44,12 @@ const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 int speed_CounterClockW = -100; // speed to move stepM // counter-clockwise move around
 int speed_ClockW = 100;  // speed to move stepM // clockwise move around
 
-// int pos_Right = 0; // position to move stepM counter-clockwise
 int pos_Middle = -165; // position to move stepM counter-clockwise
 int pos_Left = -360; // position to move stepM counter-clockwise
-// int pos_Sensor = 0; // position to move stepM clockwise
 
-int serial_Print_Count = 0;
+int serial_Print_Count = 0; // for serial print control
 
-char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
+char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 
 // Accellstepper library - MotorInterfaceType object
 // accelstepper MotorInterfaceType 4 == FULL4WIRE: full-step or half-step to be used with ULN2003 driver
@@ -65,6 +71,8 @@ void moveTo_Sensor(){
   Serial.println("moving stepM clockwise");
   Serial.println("");
 
+  intersection_3_01.enableOutputs(); // enable output pins to move stepM
+
   while (digitalRead(optic_sensor) == LOW) {
     // move stepM clockwise until Sensor position
     intersection_3_01.runSpeed();
@@ -79,6 +87,8 @@ void moveTo_Sensor(){
 
   // moveTo_Middle(); // This not to be used here
   pos_Status = 'R'; // pos R == Sensor position
+
+  intersection_3_01.disableOutputs(); // set all output pin to LOW to stop stepM
 
   return;
 
@@ -95,6 +105,8 @@ void moveTo_Middle() {
   Serial.println("moving stepM counter-clockwise"); 
   Serial.println("");
 
+  intersection_3_01.enableOutputs(); // enable output pins to move stepM
+
   while (intersection_3_01.currentPosition() != pos_Middle) {  
     // move stepM counter-clockwise until pos_Middle  
     intersection_3_01.runToNewPosition(pos_Middle); 
@@ -106,6 +118,8 @@ void moveTo_Middle() {
   Serial.println("");
 
   pos_Status = 'M'; // pos M == Middle
+
+  intersection_3_01.disableOutputs(); // set all output pin to LOW to stop stepM
 
   return;
 
@@ -121,6 +135,8 @@ void moveTo_Left() {
   intersection_3_01.setSpeed(speed_CounterClockW);
   Serial.println("moving stepM counter-clockwise");
   Serial.println("");
+
+  intersection_3_01.enableOutputs(); // enable output pins to move stepM
   
   while (intersection_3_01.currentPosition() != pos_Left) {  
     // move stepM counter-clockwise until pos_Left  
@@ -133,6 +149,8 @@ void moveTo_Left() {
   Serial.println("");
 
   pos_Status = 'L'; // pos L == Left
+
+  intersection_3_01.disableOutputs(); // set all output pin to LOW to stop stepM
 
   return;
 } // END function move_Left
