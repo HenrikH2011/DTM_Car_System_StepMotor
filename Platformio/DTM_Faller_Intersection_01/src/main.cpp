@@ -1,5 +1,5 @@
 /* Project: DTM, Faller Car, intersection_3_01 (_3: 3 Lane road. _01: Intersection nr. 1)
-Version: RC 1.0 NOTE: (Cleanup code, Add comments)
+Version: RC 1.1 NOTE: (Cleanup code, Add comments)
 Dev: HH
 MCU: Atmega328P/PB: Arduino UNO, NANO and Arduino Mega2560
 IDE: VS-Code + PlatformIO
@@ -45,8 +45,6 @@ int serial_Print_Count = 0;
 
 char pos_Status = 'X'; // S = Sensor, R = Right, M = Middle, L = Left
 
-
-
 // Accellstepper library - MotorInterfaceType object
 // accelstepper MotorInterfaceType 4 == FULL4WIRE: full-step or half-step to be used with ULN2003 driver
 // accelstepper MotorInterfaceType 8 == HALF4WIRE: module and 28BYJ-48 stepper motor
@@ -85,7 +83,6 @@ void moveTo_Sensor(){
   return;
 
 } // END function moveTo_Sensor
-
 
 // Function move_Middle
 void moveTo_Middle() {
@@ -139,7 +136,6 @@ void moveTo_Left() {
 
   return;
 } // END function move_Left
-
 
 // END Functions and definitions ************************************************
 
@@ -202,29 +198,21 @@ void loop() {
     digitalWrite(LED_active, HIGH);
 
     switch (pos_Status) {
-
       case 'S': // This not to be used here
-
         moveTo_Middle();
-
         break;
 
       case 'R':
-
         moveTo_Middle();
-
         break;
 
       case 'M':
-
         moveTo_Left();
-
         break;  
       
       case 'L':
         // moveTo_Right(); // This not to be used here. Changed to moveTO_sensor
-        moveTo_Sensor(); // Right Lane
-        
+        moveTo_Sensor(); // Right Lane        
         break;  
 
       default:
