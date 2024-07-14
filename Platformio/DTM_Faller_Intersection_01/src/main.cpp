@@ -8,7 +8,7 @@ AI: Codeium extension for Visual Studio Code
 Library: Accelstepper.h documentation homepage: 
 - https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 
-This code works with the ULN2003 Stepper Motor Driver Module and the 28BYJ-48 stepper motor
+This code works with the ULN2003 Stepper Motor Driver Module and the 28BYJ-48 stepper motor.
 When StepM not in use the accelstepper disableOutputs() function is used to set all output pin to LOW,
 to save power, avoid the stepM is getting hot and then last longer.
 
@@ -30,8 +30,8 @@ pin_09 = IN4, pin_10 = IN3, pin_11 = IN2, pin_12 = IN1
 #include <Arduino.h>
 #include <AccelStepper.h>
 
-const int LED_standby = 2; // NANO digital pin 2, moving NO
-const int LED_active = 3;  // NANO digital pin 3, moving YES
+const int LED_standby = 2; // NANO digital pin 2, moving NO, Red LED
+const int LED_active = 3;  // NANO digital pin 3, moving YES, Green LED
 
 const int optic_sensor = 6; // NANO digital pin 6, Position = 0 (see optic_sensor)
 const int pushButton = 7;   // NANO digital pin 7, activate (LOW : Input_pullup) move stepMotor

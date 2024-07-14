@@ -1,5 +1,5 @@
 # DTM_FallerCar_Intersection
-Stepper-motor control for FallerCar intersection
+Stepper-motor control for FallerCar intersection. See comments in PlatformIO code
 
 Info on AccelStepper library:
 AccelStepper library main page
