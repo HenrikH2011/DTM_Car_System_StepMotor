@@ -36,15 +36,25 @@ const int LED_active = 3;  // NANO digital pin 3, moving YES, Green LED
 const int optic_sensor = 6; // NANO digital pin 6, Position = 0 (see optic_sensor)
 const int pushButton = 7;   // NANO digital pin 7, activate (LOW : Input_pullup) move stepMotor
 
+
+// Blue ULN2003 Driver module pins: IN1, IN3, IN2, IN4 is inverted on module.
 const int motorPin1 = 9;  // NANO digital pin 9, stepMotor  - IN1
 const int motorPin2 = 10; // NANO digital pin 10, stepMotor - IN2
 const int motorPin3 = 11; // NANO digital pin 11, stepMotor - IN3
 const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 
-int speed_CounterClockW = -100; // speed to move stepM // counter-clockwise move around
-int speed_ClockW = 100;  // speed to move stepM // clockwise move around
+/*
+ // Green ULN2003 Driver module pins: IN1, IN3, IN2, IN4
+const int motorPin1 = 12;  // NANO digital pin 9, stepMotor  - IN1
+const int motorPin2 = 11; // NANO digital pin 10, stepMotor - IN2
+const int motorPin3 = 10; // NANO digital pin 11, stepMotor - IN3
+const int motorPin4 = 9; // NANO digital pin 12, stepMotor - IN4
+*/
 
-int pos_Stop = -50; // position to move stepM counter-clockwise
+int speed_CounterClockW = 100; // speed to move stepM // counter-clockwise move around
+int speed_ClockW = -100;  // speed to move stepM // clockwise move around
+
+int pos_Stop = 235; // position to move stepM counter-clockwise
 // int pos_Left = -50; // position to move stepM counter-clockwise
 
 int serial_Print_Count = 0; // for serial print control
@@ -86,7 +96,7 @@ void moveTo_Sensor(){
   Serial.println("");
 
   // moveTo_Middle(); // This not to be used here
-  pos_Status = 'R'; // pos R == Sensor position
+  pos_Status = 'S'; // pos R == Sensor position
 
   Stop_Start_2_01.disableOutputs(); // set all output pin to LOW to stop stepM
 
@@ -117,7 +127,7 @@ void moveTo_Stop() {
   Serial.println("stop stepM");
   Serial.println("");
 
-  pos_Status = 'M'; // pos M == Middle
+  pos_Status = 'L'; // pos M == Middle
 
   Stop_Start_2_01.disableOutputs(); // set all output pin to LOW to stop stepM
 
