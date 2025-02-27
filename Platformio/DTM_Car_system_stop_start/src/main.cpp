@@ -1,4 +1,4 @@
-/* Project: DTM, Faller Car, Stop / Start magnet
+/* Project: DTM, Faller Car, Stop / Start magnet (_2: 2 lane road, _02: Intersection nr. 2)
 Version: alpha - Date: 2023-01-28
 Dev: HH
 Test setup: FFS, HH
@@ -7,6 +7,9 @@ IDE: VS-Code (Microsoft) + PlatformIO
 AI: Codeium extension for Visual Studio Code
 Library: Accelstepper.h documentation homepage: 
 - https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
+
+This code control a stepper motor to stop and start Car-system vehicle,
+by moving a magnet up (Stop) and down (Start).
 
 This code works with the ULN2003 Stepper Motor Driver Module and the 28BYJ-48 stepper motor.
 When StepM not in use the accelstepper disableOutputs() function is used to set all output pin to LOW,
@@ -20,10 +23,11 @@ Serial print only used for testing feedback
 Arduino NANO extension shield: Find and check datasheet - Power IN jack connector. 
 Do not work properly with 7.5 VDC, work with 9VDC external power supply ??  
 
-Optical sensor module signal (D0) is inverted on module. LOW signal when IR sensor is on / HIGH when IR sensor is off
+Optical sensor module signal (D0) is inverted on module.
+LOW signal when IR sensor is on / HIGH when IR sensor is off
 
 IMPORTANT WHEN CONNETING DTM/Blue ULN2003 Driver Module to NANO Pins
-Blue ULN2003 Driver module pins: IN1, IN2, IN3, IN4 is inverted on module.
+Check Blue ULN2003 Driver module pins: IN1, IN2, IN3, IN4 if inverted on module.
 pin_09 = IN4, pin_10 = IN3, pin_11 = IN2, pin_12 = IN1
 */
 
@@ -36,15 +40,25 @@ const int LED_active = 3;  // NANO digital pin 3, moving YES, Green LED
 const int optic_sensor = 6; // NANO digital pin 6, Position = 0 (see optic_sensor)
 const int pushButton = 7;   // NANO digital pin 7, activate (LOW : Input_pullup) move stepMotor
 
+
+// Blue ULN2003 Driver module pins: IN1, IN3, IN2, IN4 is inverted on module.
 const int motorPin1 = 9;  // NANO digital pin 9, stepMotor  - IN1
 const int motorPin2 = 10; // NANO digital pin 10, stepMotor - IN2
 const int motorPin3 = 11; // NANO digital pin 11, stepMotor - IN3
 const int motorPin4 = 12; // NANO digital pin 12, stepMotor - IN4
 
-int speed_CounterClockW = -100; // speed to move stepM // counter-clockwise move around
-int speed_ClockW = 100;  // speed to move stepM // clockwise move around
+/*
+ // Green ULN2003 Driver module pins: IN1, IN3, IN2, IN4
+const int motorPin1 = 12;  // NANO digital pin 9, stepMotor  - IN1
+const int motorPin2 = 11; // NANO digital pin 10, stepMotor - IN2
+const int motorPin3 = 10; // NANO digital pin 11, stepMotor - IN3
+const int motorPin4 = 9; // NANO digital pin 12, stepMotor - IN4
+*/
 
-int pos_Stop = -50; // position to move stepM counter-clockwise
+int speed_CounterClockW = 100; // speed to move stepM // counter-clockwise move around
+int speed_ClockW = -100;  // speed to move stepM // clockwise move around
+
+int pos_Stop = 235; // position to move stepM counter-clockwise
 // int pos_Left = -50; // position to move stepM counter-clockwise
 
 int serial_Print_Count = 0; // for serial print control
@@ -86,7 +100,7 @@ void moveTo_Sensor(){
   Serial.println("");
 
   // moveTo_Middle(); // This not to be used here
-  pos_Status = 'R'; // pos R == Sensor position
+  pos_Status = 'S'; // pos R == Sensor position
 
   Stop_Start_2_01.disableOutputs(); // set all output pin to LOW to stop stepM
 
@@ -117,7 +131,7 @@ void moveTo_Stop() {
   Serial.println("stop stepM");
   Serial.println("");
 
-  pos_Status = 'M'; // pos M == Middle
+  pos_Status = 'L'; // pos M == Middle
 
   Stop_Start_2_01.disableOutputs(); // set all output pin to LOW to stop stepM
 
