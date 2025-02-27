@@ -23,7 +23,7 @@ Do not work properly with 7.5 VDC, work with 9VDC external power supply ??
 Optical sensor module signal (D0) is inverted on module. LOW signal when IR sensor is on.
 
 IMPORTANT WHEN CONNETING DTM/Blue ULN2003 Driver Module to NANO Pins
-Blue ULN2003 Driver module pins: IN1, IN2, IN3, IN4 is inverted on module.
+Check Blue ULN2003 Driver module pins: IN1, IN2, IN3, IN4 if inverted on module.
 pin_09 = IN4, pin_10 = IN3, pin_11 = IN2, pin_12 = IN1
 */
 

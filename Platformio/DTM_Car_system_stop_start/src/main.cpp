@@ -1,4 +1,4 @@
-/* Project: DTM, Faller Car, Stop / Start magnet
+/* Project: DTM, Faller Car, Stop / Start magnet (_2: 2 lane road, _02: Intersection nr. 2)
 Version: alpha - Date: 2023-01-28
 Dev: HH
 Test setup: FFS, HH
@@ -7,6 +7,9 @@ IDE: VS-Code (Microsoft) + PlatformIO
 AI: Codeium extension for Visual Studio Code
 Library: Accelstepper.h documentation homepage: 
 - https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
+
+This code control a stepper motor to stop and start Car-system vehicle,
+by moving a magnet up (Stop) and down (Start).
 
 This code works with the ULN2003 Stepper Motor Driver Module and the 28BYJ-48 stepper motor.
 When StepM not in use the accelstepper disableOutputs() function is used to set all output pin to LOW,
@@ -20,10 +23,11 @@ Serial print only used for testing feedback
 Arduino NANO extension shield: Find and check datasheet - Power IN jack connector. 
 Do not work properly with 7.5 VDC, work with 9VDC external power supply ??  
 
-Optical sensor module signal (D0) is inverted on module. LOW signal when IR sensor is on / HIGH when IR sensor is off
+Optical sensor module signal (D0) is inverted on module.
+LOW signal when IR sensor is on / HIGH when IR sensor is off
 
 IMPORTANT WHEN CONNETING DTM/Blue ULN2003 Driver Module to NANO Pins
-Blue ULN2003 Driver module pins: IN1, IN2, IN3, IN4 is inverted on module.
+Check Blue ULN2003 Driver module pins: IN1, IN2, IN3, IN4 if inverted on module.
 pin_09 = IN4, pin_10 = IN3, pin_11 = IN2, pin_12 = IN1
 */
 
