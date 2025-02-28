@@ -47,14 +47,14 @@ int delay_2 = 2000; // milliseconds
 int speed_ClockW = 100;   // speed to move stepM clockwise 
 int speed_CClockW = -100; // speed to move stepM counter-clockwise
 
-long stepM_1_StopPos = 200;    // move stepM CW to Stop position
-long stepM_1_IRsensPos = -200; // move stepM CCW to IR sensor position
+long stepM_1_StopPos = 100;    // move stepM CW to Stop position
+long stepM_1_IRsensPos = -100; // move stepM CCW to IR sensor position
 
-long stepM_2_StopPos = 200;    // move stepM CW to Stop position
-long stepM_2_IRsensPos = -200; // move stepM CCW to IR sensor position
+long stepM_2_StopPos = 100;    // move stepM CW to Stop position
+long stepM_2_IRsensPos = -100; // move stepM CCW to IR sensor position
 
-long stepM_3_StopPos = -200;  // move stepM CCW to Stop position
-long stepM_3_IRsensPos = 200; // move stepM CW to IR sensor position
+long stepM_3_StopPos = -100;  // move stepM CCW to Stop position
+long stepM_3_IRsensPos = 100; // move stepM CW to IR sensor position
 
 
 /*  ---------------------------------------------------------------------------------- */
