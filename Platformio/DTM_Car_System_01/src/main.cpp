@@ -47,9 +47,15 @@ int delay_2 = 2000; // milliseconds
 int speed_ClockW = 100;   // speed to move stepM clockwise 
 int speed_CClockW = -100; // speed to move stepM counter-clockwise
 
-long stepM_1_StopPos = 200; // Position to stop stepM
-long stepM_2_StopPos = 200;  
-long stepM_3_StopPos = -200; 
+long stepM_1_StopPos = 200;    // move stepM CW to Stop position
+long stepM_1_IRsensPos = -200; // move stepM CCW to IR sensor position
+
+long stepM_2_StopPos = 200;    // move stepM CW to Stop position
+long stepM_2_IRsensPos = -200; // move stepM CCW to IR sensor position
+
+long stepM_3_StopPos = -200;  // move stepM CCW to Stop position
+long stepM_3_IRsensPos = 200; // move stepM CW to IR sensor position
+
 
 /*  ---------------------------------------------------------------------------------- */
 
@@ -143,7 +149,7 @@ void moveStopPos(AccelStepper& stepM, int steps, int8_t nr){//move steppermotors
   delay(delay_2);  
 } // END moveOUT
 
-void moveToIRsens(AccelStepper& stepM, int8_t IR_sens, int8_t nr){ // move all steppermotors to IN position ---------
+void moveToIRsens(AccelStepper& stepM,int steps, int8_t IR_sens, int8_t nr){ // move all steppermotors to IN position ---------
   Serial.println("move IRsens start "); 
   stepM.enableOutputs();
   stepM.setCurrentPosition(0);
@@ -241,13 +247,13 @@ void setup() { /****************************************************************
   Serial.println("move all steppermotors to IR_Sens position if not there already");
   Serial.println("");
   
-  moveToIRsens(stepM_1, IR_Sens_1, 1);
+  moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
   delay(delay_1);
   
-  moveToIRsens(stepM_2, IR_Sens_2, 2);
+  moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
   delay(delay_1);
   
-  moveToIRsens(stepM_3, IR_Sens_3, 3);
+  moveToIRsens(stepM_3, stepM_1_IRsensPos, IR_Sens_3, 3);
   delay(delay_1);
   
 
@@ -257,3 +263,7 @@ void setup() { /****************************************************************
   Serial.println("void setup end");
   Serial.println("");
 } // END void setup /************************************************************************/
+
+void loop() { /******************************************************************************/
+
+} // END void loop /*************************************************************************/
