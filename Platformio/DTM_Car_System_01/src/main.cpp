@@ -40,32 +40,42 @@ pin_09 = IN4, pin_10 = IN3, pin_11 = IN2, pin_12 = IN1
 #include <Arduino.h>
 #include <AccelStepper.h>
 
-// const int LED_standby = 2; // NANO digital pin 2, moving NO, Red LED
-// const int LED_active = 3;  // NANO digital pin 3, moving YES, Green LED
-
 /*  ----------------------- Stepper motor control interface -------------------------- */  
 int delay_1 = 1000; // milliseconds
 int delay_2 = 2000; // milliseconds
 
-int speed_CounterClockW = -100; // speed to move stepM // counter-clockwise move around
-int speed_ClockW = 100;  // speed to move stepM // clockwise move around
+int speed_ClockW = 100;   // speed to move stepM clockwise 
+int speed_CClockW = -100; // speed to move stepM counter-clockwise
 
-long IR_Sens_1_pos = -8000; // move stepM steps to out position
-long stepM_1_IR_Sens_pos = 8000; // move stepM steps to position IN
+long stepM_1_StopPos = 200; // Position to stop stepM
+long stepM_2_StopPos = 200;  
+long stepM_3_StopPos = -200; 
 
-long stepM_2_posOut = -8000;
-long stepM_2_posIN = 8000;  
-
-long stepM_3_posOut = -8200; 
-long stepM_3_posIN = 8100;  
 /*  ---------------------------------------------------------------------------------- */
 
-// Define Pin constants
-const int IR_sens_01 = 13; // NANO digital pin, active = HIGH (Object detected)
-const int IR_sens_02 = 12; // NANO digital pin
-const int IR_sens_03 = 11; // NANO digital pin
+/* ************************* Define and initalize GLOBAL variables ******************* */
+bool serialPrint_loop = true; // Serial Print run only if true
+int serial_Print_Count = 0; // for serial print control
 
-const int pushButton_1 = A0; // NANO analog pin, active = HIGH, move stepM, Pulldown 10K
+bool switch_Halt_loop = true; // serial print run only if true
+bool switch_Halt = true; // 
+
+char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
+
+/* ************************* Define golbale constants ******************************* */
+// const int LED_standby = 2; // NANO digital pin 2, moving NO, Red LED
+// const int LED_active = 3;  // NANO digital pin 3, moving YES, Green LED
+
+
+// Define Pin constants
+const int IR_Sens_1 = 13; // NANO digital pin, active = HIGH (Object detected)
+const int IR_Sens_2 = 12; // NANO digital pin
+const int IR_Sens_3 = 11; // NANO digital pin
+
+const int swicth_Halt = A4;  // NANO analog pin
+// active = LOW - default = true (HIGH) pause code until false (LOW)
+
+const int pushButton_1 = A0; // NANO analog pin, active = HIGH, move stepM
 const int pushButton_2 = A1; // NANO analog pin, 
 const int pushButton_3 = A2; // NANO analog pin, 
 
@@ -87,20 +97,6 @@ const int stepM3_IN2 = A3; // NANO digital pin, stepMotor - IN2
 const int stepM3_IN3 = A6; // NANO digital pin, stepMotor - IN3
 const int stepM3_IN4 = A7; // NANO digital pin, stepMotor - IN4
 
-/* ************************* Define and initalize GLOBAL variables ******************* */
-bool serialPrint_loop = true; // Serial Print run only if true
-int serial_Print_Count = 0; // for serial print control
-
-
-
-int pos_Middle = -165; // position to move stepM counter-clockwise
-int pos_Left = -360; // position to move stepM counter-clockwise
-
-
-
-char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
-
-/* *********************************************************************************** */
 
 // Accellstepper library - MotorInterfaceType object
 // accelstepper MotorInterfaceType 4 == FULL4WIRE: full-step or half-step to be used with ULN2003 driver
@@ -115,12 +111,149 @@ char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 #define MotorInterfaceType_3 4
 
 // StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1) 
-AccelStepper intersection_2_01 = AccelStepper(MotorInterfaceType_1, StepM1_IN1, stepM1_IN3, stepM1_IN2, stepM1_IN4);
+AccelStepper stepM_1 = AccelStepper(MotorInterfaceType_1, StepM1_IN1, stepM1_IN3, stepM1_IN2, stepM1_IN4);
 
 // StepM for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
-AccelStepper Stop_Start_01 = AccelStepper(MotorInterfaceType_2, stepM2_IN1, stepM2_IN3, stepM2_IN2, stepM2_IN4);
+AccelStepper stepM_2 = AccelStepper(MotorInterfaceType_2, stepM2_IN1, stepM2_IN3, stepM2_IN2, stepM2_IN4);
 
 // StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane road
-AccelStepper Stop_Start_02 = AccelStepper(MotorInterfaceType_3, stepM3_IN1, stepM3_IN3, stepM3_IN2, stepM3_IN4);
+AccelStepper stepM_3 = AccelStepper(MotorInterfaceType_3, stepM3_IN1, stepM3_IN3, stepM3_IN2, stepM3_IN4);
 
+// defination and initalization of functions: **************************************************************
+void moveStopPos(AccelStepper& stepM, int steps, int8_t nr){//move steppermotors to OUT position --
+  Serial.print ("move StopPos start: ");
+  Serial.println( nr );
+  stepM.enableOutputs();
+  stepM.setCurrentPosition(0);
+  stepM.moveTo(steps);
+  // Only run stepM if IR sensor is LOW and switch_Halt is OFF (HIGH signal) and stop stepM when at posOut
+  while (stepM.distanceToGo() != 0 && digitalRead(switch_Halt) != HIGH) {
+    stepM.run();      
+  }// END while
+  stepM.stop();
+  Serial.println("StepM stopped");
+  Serial.print("Current position: ");
+  Serial.println(stepM.currentPosition());
+  Serial.print("Distance to go: ");    
+  Serial.println(stepM.distanceToGo());
+  stepM.setCurrentPosition(0);
+  Serial.println("Current position set to 0");
+  Serial.println("");
+  stepM.disableOutputs();
+  delay(delay_2);  
+} // END moveOUT
 
+void moveToIRsens(AccelStepper& stepM, int8_t IR_sens, int8_t nr){ // move all steppermotors to IN position ---------
+  Serial.println("move IRsens start "); 
+  stepM.enableOutputs();
+  stepM.setCurrentPosition(0);
+  stepM.moveTo(steps);
+  // Only run stepM if switch_Halt is OFF (HIGH signal) and stop stepM when at outPos
+  while (digitalRead(IR_sens) != HIGH) { // while IR sensor object not detected
+    stepM.run();
+  } // END while
+  stepM.stop();
+  Serial.println("StepM stopped");
+  Serial.print("Current position: ");
+  Serial.println(stepM.currentPosition());
+  Serial.print("Distance to go: ");    
+  Serial.println(stepM.distanceToGo());
+  stepM.setCurrentPosition(0);
+  Serial.println("Current position set to 0");
+  Serial.println("");
+  stepM.disableOutputs();
+  delay(delay_2);
+} // END moveIN
+
+void setup() { /**********************************************************************************/
+  Serial.begin(9600); // setup serial comminication
+
+  // wait for serial port to connect. Needed for native USB port only
+  while (!Serial) {} // Test serial connection
+  Serial.println("Serial port ready");
+  Serial.println("void setup start");
+  Serial.println("");
+
+  //disable all step motor output pin signals for sleep mode
+  stepM_1.disableOutputs();
+  stepM_2.disableOutputs();
+  stepM_3.disableOutputs();  
+  Serial.println("all stepmotor output pins disabled");
+
+  // Set pin modes 
+  pinMode(switch_Halt, INPUT_PULLUP);  // switch ON = LOW / switch OFF = HIGH 
+  pinMode(pushButton_1, INPUT); // Pushbutton 10K pulldown / pushb pressed = HIGH / not pressed = LOW
+  pinMode(pushButton_2, INPUT); 
+  pinMode(pushButton_3, INPUT); 
+
+  pinMode(IR_Sens_1, INPUT_PULLUP);  // IR sensor internal pullUp
+  pinMode(IR_Sens_2, INPUT_PULLUP);  
+  pinMode(IR_Sens_3, INPUT_PULLUP);  
+
+  /* --------------------- AccelStepper functions setup: ---------------------------------------------- */
+  // Set the acceleration, maximum steps and speed per second ^2 (steps per second squared) ^2 means x²
+  // the acceleration is increasing at a rate of x steps per second, every second.
+  
+  stepM_1.setMaxSpeed(500);  // Set the maximum acceleration in steps per second^2:
+  stepM_1.setAcceleration(50);  // Set the maximum steps per second:
+  stepM_1.setSpeed(300); // Set the speed in steps per second
+
+  stepM_2.setMaxSpeed(500);
+  stepM_2.setAcceleration(100);
+  stepM_2.setSpeed(300);
+  
+  stepM_3.setMaxSpeed(500);
+  stepM_3.setAcceleration(50);
+  stepM_3.setSpeed(300);  
+  
+  /*--------------------------------------------------------------------------------------------------*/
+  
+  // Check IR sensors state:
+  Serial.println("Check IR sensors state: LOW(object NOT detected) / HIGH (object detected) ");
+  Serial.print("IR sens 1: ");
+  Serial.println(digitalRead(IR_Sens_1));
+  Serial.print("IR sens 2: ");
+  Serial.println(digitalRead(IR_Sens_2));
+  Serial.print("IR sens 3: ");
+  Serial.println(digitalRead(IR_Sens_3));
+  Serial.println("");
+  
+  // FOR TEST and emergency stop ONLY - 
+  // wait for switch_Halt to be set OFF (OFF = HIGH signal) TTTTTTTTTTTTTTTTTTTTTTT */
+  
+  Serial.println("Check SWITCH_HALT state: ON/OFF");
+  Serial.println("");
+  while (digitalRead(switch_Halt) == LOW) {// if switch_Halt is ON (LOW signal)
+    if (switch_Halt_loop == true) {//only one time serial print until switch_Halt is OFF
+      Serial.println("switch_Halt is ON(LOW) - wait for switch_Halt to be set OFF(HIGH)");
+      Serial.println("");
+    } // END if 
+    switch_Halt_loop = false;   
+  } // END while
+  Serial.println("void setup continue");
+  Serial.println("");
+  
+  // delay(delay_1); // delay for system to be ready - TEST ONLY
+  /* END TEST and emergency stop ONLY TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT*/
+  
+
+  // move all steppermotors to OUT position, if not there already
+  Serial.println("move all steppermotors to IR_Sens position if not there already");
+  Serial.println("");
+  
+  moveToIRsens(stepM_1, IR_Sens_1, 1);
+  delay(delay_1);
+  
+  moveToIRsens(stepM_2, IR_Sens_2, 2);
+  delay(delay_1);
+  
+  moveToIRsens(stepM_3, IR_Sens_3, 3);
+  delay(delay_1);
+  
+
+  Serial.println("all steppermotors at OUT position");
+  Serial.println("");
+
+  Serial.println("void setup end");
+  Serial.println("");
+} // END void setup /************************************************************************/
