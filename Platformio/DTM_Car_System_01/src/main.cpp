@@ -155,7 +155,7 @@ void moveToIRsens(AccelStepper& stepM,int steps, int8_t IR_sens, int8_t nr){ // 
   stepM.setCurrentPosition(0);
   stepM.moveTo(steps);
   // Only run stepM if switch_Halt is OFF (HIGH signal) and stop stepM when at outPos
-  while (digitalRead(IR_sens) != HIGH) { // while IR sensor object not detected
+  while (digitalRead(IR_sens) != HIGH && digitalRead(switch_Halt) != HIGH) { // while IR sensor object not detected
     stepM.run();
   } // END while
   stepM.stop();
@@ -265,5 +265,45 @@ void setup() { /****************************************************************
 } // END void setup /************************************************************************/
 
 void loop() { /******************************************************************************/
+// SerialPrint only one time for testing
+if (serialPrint_loop == true) { 
+  Serial.println("");
+  Serial.println("void loop start");
+  Serial.println("");
+  Serial.println("Press pushbutton: 1, 2, or 3 ");
+  Serial.println("");   
+} // END if - SerialPrint  
+
+
+// Setin logic for pushbutton pressed
+
+
+// TEST MOVE TO STOPPOS
+moveStopPos(stepM_1, stepM_1_StopPos, 1);
+delay(delay_1);
+
+moveStopPos(stepM_2, stepM_2_StopPos, 2);
+delay(delay_1);
+
+moveStopPos(stepM_3, stepM_3_StopPos, 3);
+delay(delay_2);
+
+// TEST MOVE TO IRSENS
+moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
+delay(delay_1);
+
+moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
+delay(delay_1);
+
+moveToIRsens(stepM_3, stepM_3_IRsensPos, IR_Sens_3, 3);
+delay(delay_2);
+
+// SerialPrint only one time for testing
+if (serialPrint_loop == true) { 
+  Serial.println("void loop end");
+  Serial.println(""); // one time serial print only for first void loop run
+} // END if - SerialPrint
+
+serialPrint_loop = false; // set serialPrint_loop to false for only one time serialPrint
 
 } // END void loop /*************************************************************************/
