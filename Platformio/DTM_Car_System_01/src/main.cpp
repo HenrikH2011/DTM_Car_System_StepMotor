@@ -44,17 +44,21 @@ pin_09 = IN4, pin_10 = IN3, pin_11 = IN2, pin_12 = IN1
 int delay_1 = 1000; // milliseconds
 int delay_2 = 2000; // milliseconds
 
-int speed_ClockW = 100;   // speed to move stepM clockwise 
-int speed_CClockW = -100; // speed to move stepM counter-clockwise
+// The 28BYJ-48 steppermotor have 4096 steps per rotation
+int speed_ClockW = 500;   // speed to move stepM clockwise 
+int speed_CClockW = -500; // speed to move stepM counter-clockwise
 
-long stepM_1_StopPos = 100;    // move stepM CW to Stop position
-long stepM_1_IRsensPos = -100; // move stepM CCW to IR sensor position
+// NOTE: this stepM move CCW to IR sensor position
+long stepM_1_StopPos = 1000;    // move stepM CW to Stop position
+long stepM_1_IRsensPos = -2500; // move stepM CCW to IR sensor position
 
-long stepM_2_StopPos = 100;    // move stepM CW to Stop position
-long stepM_2_IRsensPos = -100; // move stepM CCW to IR sensor position
+// NOTE: this stepM move CCW to IR sensor position
+long stepM_2_StopPos = 1000;    // move stepM CW to Stop position
+long stepM_2_IRsensPos = -2500; // move stepM CCW to IR sensor position
 
-long stepM_3_StopPos = -100;  // move stepM CCW to Stop position
-long stepM_3_IRsensPos = 100; // move stepM CW to IR sensor position
+// NOTE: this stepM move CW to IR sensor position
+long stepM_3_StopPos = -1000;  // move stepM CCW to Stop position
+long stepM_3_IRsensPos = 2500; // move stepM CW to IR sensor position
 
 
 /*  ---------------------------------------------------------------------------------- */
@@ -133,7 +137,7 @@ void moveStopPos(AccelStepper& stepM, int steps, int8_t nr){//move steppermotors
   stepM.setCurrentPosition(0);
   stepM.moveTo(steps);
   // Only run stepM if IR sensor is LOW and switch_Halt is OFF (HIGH signal) and stop stepM when at posOut
-  while (stepM.distanceToGo() != 0 && digitalRead(switch_Halt) != HIGH) {
+  while (stepM.distanceToGo() != 0 && digitalRead(switch_Halt) == HIGH) {
     stepM.run();      
   }// END while
   stepM.stop();
@@ -155,7 +159,7 @@ void moveToIRsens(AccelStepper& stepM,int steps, int8_t IR_sens, int8_t nr){ // 
   stepM.setCurrentPosition(0);
   stepM.moveTo(steps);
   // Only run stepM if switch_Halt is OFF (HIGH signal) and stop stepM when at outPos
-  while (digitalRead(IR_sens) != HIGH && digitalRead(switch_Halt) != HIGH) { // while IR sensor object not detected
+  while (digitalRead(IR_sens) == LOW && digitalRead(switch_Halt) == HIGH) { // while IR sensor object not detected
     stepM.run();
   } // END while
   stepM.stop();
@@ -188,9 +192,9 @@ void setup() { /****************************************************************
 
   // Set pin modes 
   pinMode(switch_Halt, INPUT_PULLUP);  // switch ON = LOW / switch OFF = HIGH 
-  pinMode(pushButton_1, INPUT); // Pushbutton 10K pulldown / pushb pressed = HIGH / not pressed = LOW
-  pinMode(pushButton_2, INPUT); 
-  pinMode(pushButton_3, INPUT); 
+  pinMode(pushButton_1, INPUT_PULLUP); // Pushbutton 10K pulldown / pushb pressed = HIGH / not pressed = LOW
+  pinMode(pushButton_2, INPUT_PULLUP); 
+  pinMode(pushButton_3, INPUT_PULLUP); 
 
   pinMode(IR_Sens_1, INPUT_PULLUP);  // IR sensor internal pullUp
   pinMode(IR_Sens_2, INPUT_PULLUP);  
@@ -265,45 +269,53 @@ void setup() { /****************************************************************
 } // END void setup /************************************************************************/
 
 void loop() { /******************************************************************************/
-// SerialPrint only one time for testing
-if (serialPrint_loop == true) { 
-  Serial.println("");
-  Serial.println("void loop start");
-  Serial.println("");
-  Serial.println("Press pushbutton: 1, 2, or 3 ");
-  Serial.println("");   
-} // END if - SerialPrint  
+  // SerialPrint only one time for testing
+  if (serialPrint_loop == true) { 
+    Serial.println("");
+    Serial.println("void loop start");
+    Serial.println("");
+    Serial.println("Press pushbutton: 1, 2, or 3 ");
+    Serial.println("");   
+  } // END if - SerialPrint  
 
+  // TEST MOVE TO STOPPOS
+  if (digitalRead(pushButton_1) == LOW) {
+    Serial.println("pushbutton 1 pressed");
+    Serial.println("");
+    moveStopPos(stepM_1, stepM_1_StopPos, 1);
+    delay(delay_1);    
+    
+    moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
+    delay(delay_1);    
+  } // END if
 
-// Setin logic for pushbutton pressed
+  if (digitalRead(pushButton_2) == LOW) {
+    Serial.println("pushbutton 2 pressed");
+    Serial.println("");
+    moveStopPos(stepM_2, stepM_2_StopPos, 2);
+    delay(delay_1);
 
+    moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
+    delay(delay_1);    
+  } // END if
 
-// TEST MOVE TO STOPPOS
-moveStopPos(stepM_1, stepM_1_StopPos, 1);
-delay(delay_1);
+  if (digitalRead(pushButton_3) == LOW) {
+    Serial.println("pushbutton 3 pressed");
+    Serial.println("");
+    moveStopPos(stepM_3, stepM_3_StopPos, 3);
+    delay(delay_2);
 
-moveStopPos(stepM_2, stepM_2_StopPos, 2);
-delay(delay_1);
+    moveToIRsens(stepM_3, stepM_3_IRsensPos, IR_Sens_3, 3);
+    delay(delay_2);
+  } // END if
 
-moveStopPos(stepM_3, stepM_3_StopPos, 3);
-delay(delay_2);
+  
+  // SerialPrint only one time for testing
+  if (serialPrint_loop == true) { 
+    Serial.println("void loop end");
+    Serial.println(""); // one time serial print only for first void loop run
+  } // END if - SerialPrint
 
-// TEST MOVE TO IRSENS
-moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
-delay(delay_1);
-
-moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
-delay(delay_1);
-
-moveToIRsens(stepM_3, stepM_3_IRsensPos, IR_Sens_3, 3);
-delay(delay_2);
-
-// SerialPrint only one time for testing
-if (serialPrint_loop == true) { 
-  Serial.println("void loop end");
-  Serial.println(""); // one time serial print only for first void loop run
-} // END if - SerialPrint
-
-serialPrint_loop = false; // set serialPrint_loop to false for only one time serialPrint
+  serialPrint_loop = false; // set serialPrint_loop to false for only one time serialPrint
 
 } // END void loop /*************************************************************************/
