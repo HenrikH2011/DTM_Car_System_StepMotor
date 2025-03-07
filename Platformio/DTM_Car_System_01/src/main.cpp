@@ -49,16 +49,16 @@ int speed_ClockW = 500;   // speed to move stepM clockwise
 int speed_CClockW = -500; // speed to move stepM counter-clockwise
 
 // NOTE: this stepM move CCW to IR sensor position
-long stepM_1_StopPos = 1000;    // move stepM CW to Stop position
-long stepM_1_IRsensPos = -2500; // move stepM CCW to IR sensor position
+long stepM_1_StopPos = 200;    // move stepM CW to Stop position
+long stepM_1_IRsensPos = -200; // move stepM CCW to IR sensor position
 
 // NOTE: this stepM move CCW to IR sensor position
-long stepM_2_StopPos = 1000;    // move stepM CW to Stop position
-long stepM_2_IRsensPos = -2500; // move stepM CCW to IR sensor position
+long stepM_2_StopPos = 72;    // move stepM CW to Stop position
+long stepM_2_IRsensPos = -80; // move stepM CCW to IR sensor position
 
 // NOTE: this stepM move CW to IR sensor position
-long stepM_3_StopPos = -1000;  // move stepM CCW to Stop position
-long stepM_3_IRsensPos = 2500; // move stepM CW to IR sensor position
+long stepM_3_StopPos = -200;  // move stepM CCW to Stop position
+long stepM_3_IRsensPos = 200; // move stepM CW to IR sensor position
 
 
 /*  ---------------------------------------------------------------------------------- */
@@ -68,7 +68,6 @@ bool serialPrint_loop = true; // Serial Print run only if true
 int serial_Print_Count = 0; // for serial print control
 
 bool switch_Halt_loop = true; // serial print run only if true
-bool switch_Halt = true; // 
 
 char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 
@@ -78,11 +77,11 @@ char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 
 
 // Define Pin constants
-const int IR_Sens_1 = 13; // NANO digital pin, active = HIGH (Object detected)
+const int IR_Sens_1 = A3; // NANO digital pin, active = HIGH (Object detected)
 const int IR_Sens_2 = 12; // NANO digital pin
 const int IR_Sens_3 = 11; // NANO digital pin
 
-const int swicth_Halt = A4;  // NANO analog pin
+const int switch_Halt = A4;  // NANO analog pin
 // active = LOW - default = true (HIGH) pause code until false (LOW)
 
 const int pushButton_1 = A0; // NANO analog pin, active = HIGH, move stepM
@@ -103,7 +102,7 @@ const int stepM2_IN4 = 6; // NANO digital pin, stepMotor - IN4
 
 // StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane road
 const int stepM3_IN1 = 2;   // NANO digital pin, stepMotor - IN1
-const int stepM3_IN2 = A3; // NANO digital pin, stepMotor - IN2
+const int stepM3_IN2 = A5; // NANO digital pin, stepMotor - IN2
 const int stepM3_IN3 = A6; // NANO digital pin, stepMotor - IN3
 const int stepM3_IN4 = A7; // NANO digital pin, stepMotor - IN4
 
