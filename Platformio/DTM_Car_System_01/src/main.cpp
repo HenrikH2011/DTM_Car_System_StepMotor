@@ -12,6 +12,14 @@ AI: Codeium extension for Visual Studio Code
 Library: Accelstepper.h documentation homepage: 
 - https://www.airspayce.com/mikem/arduino/AccelStepper/index.html
 
+
+ToDo:
+1. edit Pin connections 
+  - D2, A5, A6, A7 >> A0, A1, A2, A3
+  - A0, A1, A2 >> A5, A6, A7
+
+2. 
+
 Description: 
 - This code is for Stop and Start magnets and Intersection control for 2 lane road, 
   and Stop and Start magnet for single lane road.
@@ -77,34 +85,36 @@ char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 
 
 // Define Pin constants
-const int IR_Sens_1 = A3; // NANO digital pin, active = HIGH (Object detected)
+const int IR_Sens_1 = 2; // NANO digital pin, active = HIGH (Object detected)
 const int IR_Sens_2 = 12; // NANO digital pin
 const int IR_Sens_3 = 11; // NANO digital pin
 
 const int switch_Halt = A4;  // NANO analog pin
 // active = LOW - default = true (HIGH) pause code until false (LOW)
 
-const int pushButton_1 = A0; // NANO analog pin, active = HIGH, move stepM
-const int pushButton_2 = A1; // NANO analog pin, 
-const int pushButton_3 = A2; // NANO analog pin, 
+const int pushButton_1 = A5; // NANO analog pin, active = HIGH, move stepM
+const int pushButton_2 = A6; // NANO analog pin, 
+const int pushButton_3 = A7; // NANO analog pin, 
 
-// StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
+// StepM 1 - StepM for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
 const int StepM1_IN1 = 7;   // NANO digital pin, stepMotor - IN1
 const int stepM1_IN2 = 8;   // NANO digital pin, stepMotor - IN2
 const int stepM1_IN3 = 9;   // NANO digital pin, stepMotor - IN3
 const int stepM1_IN4 = 10; // NANO digital pin, stepMotor - IN4
 
-// StepM for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
+// StepM 2 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
 const int stepM2_IN1 = 3; // NANO digital pin, stepMotor - IN1
 const int stepM2_IN2 = 4; // NANO digital pin, stepMotor - IN2
 const int stepM2_IN3 = 5; // NANO digital pin, stepMotor - IN3
 const int stepM2_IN4 = 6; // NANO digital pin, stepMotor - IN4
 
-// StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane road
-const int stepM3_IN1 = 2;   // NANO digital pin, stepMotor - IN1
-const int stepM3_IN2 = A5; // NANO digital pin, stepMotor - IN2
-const int stepM3_IN3 = A6; // NANO digital pin, stepMotor - IN3
-const int stepM3_IN4 = A7; // NANO digital pin, stepMotor - IN4
+// StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane ro
+
+// StepM 3 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
+const int stepM3_IN1 = A0;   // NANO digital pin, stepMotor - IN1
+const int stepM3_IN2 = A1; // NANO digital pin, stepMotor - IN2
+const int stepM3_IN3 = A2; // NANO digital pin, stepMotor - IN3
+const int stepM3_IN4 = A3; // NANO digital pin, stepMotor - IN4
 
 
 // Accellstepper library - MotorInterfaceType object
@@ -250,11 +260,11 @@ void setup() { /****************************************************************
   Serial.println("move all steppermotors to IR_Sens position if not there already");
   Serial.println("");
   
-  moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
-  delay(delay_1);
+  //moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
+  //delay(delay_1);
   
-  moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
-  delay(delay_1);
+  //moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
+  //delay(delay_1);
   
   moveToIRsens(stepM_3, stepM_1_IRsensPos, IR_Sens_3, 3);
   delay(delay_1);
@@ -278,6 +288,7 @@ void loop() { /*****************************************************************
   } // END if - SerialPrint  
 
   // TEST MOVE TO STOPPOS
+  /*
   if (digitalRead(pushButton_1) == LOW) {
     Serial.println("pushbutton 1 pressed");
     Serial.println("");
@@ -297,6 +308,8 @@ void loop() { /*****************************************************************
     moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
     delay(delay_1);    
   } // END if
+
+  */
 
   if (digitalRead(pushButton_3) == LOW) {
     Serial.println("pushbutton 3 pressed");
