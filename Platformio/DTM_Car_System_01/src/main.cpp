@@ -92,14 +92,14 @@ const int IR_Sens_3 = 11; // NANO digital pin
 const int switch_Halt = A4;  // NANO analog pin
 // active = LOW - default = true (HIGH) pause code until false (LOW)
 
-const int pushButton_1 = A5; // NANO analog pin, active = HIGH, move stepM
-const int pushButton_2 = A6; // NANO analog pin, 
-const int pushButton_3 = A7; // NANO analog pin, 
+const int pushButton_1 = 18; // NANO Analog A5 Pin called as digital pin, active = HIGH, move stepM
+const int pushButton_2 = 19; // NANO Analog A6 Pin called as digital pin, 
+const int pushButton_3 = 20; // NANO Analog A7 Pin called as digital pin, 
 
 // StepM 1 - StepM for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
-const int StepM1_IN1 = 7;   // NANO digital pin, stepMotor - IN1
-const int stepM1_IN2 = 8;   // NANO digital pin, stepMotor - IN2
-const int stepM1_IN3 = 9;   // NANO digital pin, stepMotor - IN3
+const int StepM1_IN1 = 7;  // NANO digital pin, stepMotor - IN1
+const int stepM1_IN2 = 8;  // NANO digital pin, stepMotor - IN2
+const int stepM1_IN3 = 9;  // NANO digital pin, stepMotor - IN3
 const int stepM1_IN4 = 10; // NANO digital pin, stepMotor - IN4
 
 // StepM 2 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
@@ -111,10 +111,10 @@ const int stepM2_IN4 = 6; // NANO digital pin, stepMotor - IN4
 // StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane ro
 
 // StepM 3 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
-const int stepM3_IN1 = A0;   // NANO digital pin, stepMotor - IN1
-const int stepM3_IN2 = A1; // NANO digital pin, stepMotor - IN2
-const int stepM3_IN3 = A2; // NANO digital pin, stepMotor - IN3
-const int stepM3_IN4 = A3; // NANO digital pin, stepMotor - IN4
+const int stepM3_IN1 = 14; // NANO Analog A0 Pin called as digital pin, stepMotor - IN1
+const int stepM3_IN2 = 15; // NANO Analog A1 Pin called as digital pin, stepMotor - IN2
+const int stepM3_IN3 = 16; // NANO Analog A2 Pin called as digital pin, stepMotor - IN3
+const int stepM3_IN4 = 17; // NANO Analog A3 Pin called as digital pin, stepMotor - IN4
 
 
 // Accellstepper library - MotorInterfaceType object
