@@ -17,6 +17,10 @@ ToDo:
 1. edit Pin connections 
   - D2, A5, A6, A7 >> A0, A1, A2, A3
   - A0, A1, A2 >> A5, A6, A7
+  - NEW pin edit:
+    - stepM1 new pin settings, see in code
+    - stepM2 new pin settings, see in code
+    - stepM3 comment-out - not used, not enough digital pins on Nano. Can't use analog pins AccelStepper.h
 
 2. 
 
@@ -65,8 +69,8 @@ long stepM_2_StopPos = 72;    // move stepM CW to Stop position
 long stepM_2_IRsensPos = -80; // move stepM CCW to IR sensor position
 
 // NOTE: this stepM move CW to IR sensor position
-long stepM_3_StopPos = -200;  // move stepM CCW to Stop position
-long stepM_3_IRsensPos = 200; // move stepM CW to IR sensor position
+//long stepM_3_StopPos = -200;  // move stepM CCW to Stop position
+//long stepM_3_IRsensPos = 200; // move stepM CW to IR sensor position
 
 
 /*  ---------------------------------------------------------------------------------- */
@@ -85,9 +89,9 @@ char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 
 
 // Define Pin constants
-const int IR_Sens_1 = 14; // NANO digital pin, active = HIGH (Object detected)
-const int IR_Sens_2 = 15; // NANO digital pin
-//const int IR_Sens_3 = ; // NANO digital pin
+const int IR_Sens_1 = 14; // NANO analog pin, active = HIGH (Object detected)
+const int IR_Sens_2 = 15; // NANO analog pin
+//const int IR_Sens_3 = ; // not in use
 
 const int switch_Halt = 12;  // NANO analog pin
 //active = LOW - default = true (HIGH) pause code until false (LOW)
