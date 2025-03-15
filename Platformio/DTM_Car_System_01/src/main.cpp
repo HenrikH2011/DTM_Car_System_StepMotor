@@ -85,36 +85,36 @@ char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 
 
 // Define Pin constants
-const int IR_Sens_1 = 2; // NANO digital pin, active = HIGH (Object detected)
-const int IR_Sens_2 = 12; // NANO digital pin
-const int IR_Sens_3 = 11; // NANO digital pin
+const int IR_Sens_1 = 14; // NANO digital pin, active = HIGH (Object detected)
+const int IR_Sens_2 = 15; // NANO digital pin
+//const int IR_Sens_3 = ; // NANO digital pin
 
-const int switch_Halt = A4;  // NANO analog pin
-// active = LOW - default = true (HIGH) pause code until false (LOW)
+const int switch_Halt = 12;  // NANO analog pin
+//active = LOW - default = true (HIGH) pause code until false (LOW)
 
-const int pushButton_1 = 18; // NANO Analog A5 Pin called as digital pin, active = HIGH, move stepM
-const int pushButton_2 = 19; // NANO Analog A6 Pin called as digital pin, 
-const int pushButton_3 = 20; // NANO Analog A7 Pin called as digital pin, 
+const int pushButton_1 = 6; // NANO Analog A5 Pin called as digital pin, active = HIGH, move stepM
+const int pushButton_2 = 11; // NANO Analog A6 Pin called as digital pin, 
+//const int pushButton_3 = ; // NANO Analog A7 Pin called as digital pin, 
 
 // StepM 1 - StepM for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
-const int StepM1_IN1 = 7;  // NANO digital pin, stepMotor - IN1
-const int stepM1_IN2 = 8;  // NANO digital pin, stepMotor - IN2
-const int stepM1_IN3 = 9;  // NANO digital pin, stepMotor - IN3
-const int stepM1_IN4 = 10; // NANO digital pin, stepMotor - IN4
+const int StepM1_IN1 = 2;  // NANO digital pin, stepMotor - IN1
+const int stepM1_IN2 = 3;  // NANO digital pin, stepMotor - IN2
+const int stepM1_IN3 = 4;  // NANO digital pin, stepMotor - IN3
+const int stepM1_IN4 = 5; // NANO digital pin, stepMotor - IN4
 
 // StepM 2 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
-const int stepM2_IN1 = 3; // NANO digital pin, stepMotor - IN1
-const int stepM2_IN2 = 4; // NANO digital pin, stepMotor - IN2
-const int stepM2_IN3 = 5; // NANO digital pin, stepMotor - IN3
-const int stepM2_IN4 = 6; // NANO digital pin, stepMotor - IN4
+const int stepM2_IN1 = 7; // NANO digital pin, stepMotor - IN1
+const int stepM2_IN2 = 8; // NANO digital pin, stepMotor - IN2
+const int stepM2_IN3 = 9; // NANO digital pin, stepMotor - IN3
+const int stepM2_IN4 = 10; // NANO digital pin, stepMotor - IN4
 
 // StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane ro
 
 // StepM 3 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
-const int stepM3_IN1 = 14; // NANO Analog A0 Pin called as digital pin, stepMotor - IN1
-const int stepM3_IN2 = 15; // NANO Analog A1 Pin called as digital pin, stepMotor - IN2
-const int stepM3_IN3 = 16; // NANO Analog A2 Pin called as digital pin, stepMotor - IN3
-const int stepM3_IN4 = 17; // NANO Analog A3 Pin called as digital pin, stepMotor - IN4
+// const int stepM3_IN1 = ; // NANO Analog A0 Pin called as digital pin, stepMotor - IN1
+//const int stepM3_IN2 = ; // NANO Analog A1 Pin called as digital pin, stepMotor - IN2
+//const int stepM3_IN3 = ; // NANO Analog A2 Pin called as digital pin, stepMotor - IN3
+//const int stepM3_IN4 = ; // NANO Analog A3 Pin called as digital pin, stepMotor - IN4
 
 
 // Accellstepper library - MotorInterfaceType object
@@ -127,7 +127,7 @@ const int stepM3_IN4 = 17; // NANO Analog A3 Pin called as digital pin, stepMoto
 // MotorInterfaceType for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
 #define MotorInterfaceType_2 4
 // MotorInterfaceType for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane road
-#define MotorInterfaceType_3 4
+//#define MotorInterfaceType_3 4
 
 // StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1) 
 AccelStepper stepM_1 = AccelStepper(MotorInterfaceType_1, StepM1_IN1, stepM1_IN3, stepM1_IN2, stepM1_IN4);
@@ -136,7 +136,7 @@ AccelStepper stepM_1 = AccelStepper(MotorInterfaceType_1, StepM1_IN1, stepM1_IN3
 AccelStepper stepM_2 = AccelStepper(MotorInterfaceType_2, stepM2_IN1, stepM2_IN3, stepM2_IN2, stepM2_IN4);
 
 // StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane road
-AccelStepper stepM_3 = AccelStepper(MotorInterfaceType_3, stepM3_IN1, stepM3_IN3, stepM3_IN2, stepM3_IN4);
+//AccelStepper stepM_3 = AccelStepper(MotorInterfaceType_3, stepM3_IN1, stepM3_IN3, stepM3_IN2, stepM3_IN4);
 
 // defination and initalization of functions: **************************************************************
 void moveStopPos(AccelStepper& stepM, int steps, int8_t nr){//move steppermotors to OUT position --
@@ -196,18 +196,18 @@ void setup() { /****************************************************************
   //disable all step motor output pin signals for sleep mode
   stepM_1.disableOutputs();
   stepM_2.disableOutputs();
-  stepM_3.disableOutputs();  
+  //stepM_3.disableOutputs();  
   Serial.println("all stepmotor output pins disabled");
 
   // Set pin modes 
   pinMode(switch_Halt, INPUT_PULLUP);  // switch ON = LOW / switch OFF = HIGH 
   pinMode(pushButton_1, INPUT_PULLUP); // Pushbutton 10K pulldown / pushb pressed = HIGH / not pressed = LOW
   pinMode(pushButton_2, INPUT_PULLUP); 
-  pinMode(pushButton_3, INPUT_PULLUP); 
+  //pinMode(pushButton_3, INPUT_PULLUP); 
 
   pinMode(IR_Sens_1, INPUT_PULLUP);  // IR sensor internal pullUp
   pinMode(IR_Sens_2, INPUT_PULLUP);  
-  pinMode(IR_Sens_3, INPUT_PULLUP);  
+  //pinMode(IR_Sens_3, INPUT_PULLUP);  
 
   /* --------------------- AccelStepper functions setup: ---------------------------------------------- */
   // Set the acceleration, maximum steps and speed per second ^2 (steps per second squared) ^2 means x²
@@ -221,9 +221,9 @@ void setup() { /****************************************************************
   stepM_2.setAcceleration(100);
   stepM_2.setSpeed(300);
   
-  stepM_3.setMaxSpeed(500);
-  stepM_3.setAcceleration(50);
-  stepM_3.setSpeed(300);  
+  //stepM_3.setMaxSpeed(500);
+  //stepM_3.setAcceleration(50);
+  //stepM_3.setSpeed(300);  
   
   /*--------------------------------------------------------------------------------------------------*/
   
@@ -233,8 +233,8 @@ void setup() { /****************************************************************
   Serial.println(digitalRead(IR_Sens_1));
   Serial.print("IR sens 2: ");
   Serial.println(digitalRead(IR_Sens_2));
-  Serial.print("IR sens 3: ");
-  Serial.println(digitalRead(IR_Sens_3));
+  //Serial.print("IR sens 3: ");
+  //Serial.println(digitalRead(IR_Sens_3));
   Serial.println("");
   
   // FOR TEST and emergency stop ONLY - 
@@ -260,14 +260,14 @@ void setup() { /****************************************************************
   Serial.println("move all steppermotors to IR_Sens position if not there already");
   Serial.println("");
   
-  //moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
-  //delay(delay_1);
-  
-  //moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
-  //delay(delay_1);
-  
-  moveToIRsens(stepM_3, stepM_1_IRsensPos, IR_Sens_3, 3);
+  moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
   delay(delay_1);
+  
+  moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
+  delay(delay_1);
+  
+  //moveToIRsens(stepM_3, stepM_1_IRsensPos, IR_Sens_3, 3);
+  //delay(delay_1);
   
 
   Serial.println("all steppermotors at OUT position");
@@ -288,7 +288,7 @@ void loop() { /*****************************************************************
   } // END if - SerialPrint  
 
   // TEST MOVE TO STOPPOS
-  /*
+  
   if (digitalRead(pushButton_1) == LOW) {
     Serial.println("pushbutton 1 pressed");
     Serial.println("");
@@ -308,9 +308,8 @@ void loop() { /*****************************************************************
     moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
     delay(delay_1);    
   } // END if
-
-  */
-
+  
+  /*
   if (digitalRead(pushButton_3) == LOW) {
     Serial.println("pushbutton 3 pressed");
     Serial.println("");
@@ -320,6 +319,7 @@ void loop() { /*****************************************************************
     moveToIRsens(stepM_3, stepM_3_IRsensPos, IR_Sens_3, 3);
     delay(delay_2);
   } // END if
+  */
 
   
   // SerialPrint only one time for testing
