@@ -15,11 +15,11 @@ Library: Accelstepper.h documentation homepage:
 
 ToDo:
 1. edit Pin connections 
-  - D2, A5, A6, A7 >> A0, A1, A2, A3
-  - A0, A1, A2 >> A5, A6, A7
+  - Digital
+  - Analog pin's
   - NEW pin edit:
-    - stepM1 new pin settings, see in code
-    - stepM2 new pin settings, see in code
+    - stepM1 new pin settings, adjust in code
+    - stepM2 new pin settings, adjust in code
     - stepM3 comment-out - not used, not enough digital pins on Nano. Can't use analog pins AccelStepper.h
 
 2. 
@@ -87,32 +87,30 @@ char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 // const int LED_standby = 2; // NANO digital pin 2, moving NO, Red LED
 // const int LED_active = 3;  // NANO digital pin 3, moving YES, Green LED
 
-
 // Define Pin constants
-const int IR_Sens_1 = 14; // NANO analog pin, active = HIGH (Object detected)
-const int IR_Sens_2 = 15; // NANO analog pin
+// active = HIGH (Object detected) Signal inverted in IC on PCB
+const int IR_Sens_1 = 14; // NANO A0 analog pin, as digital input
+const int IR_Sens_2 = 15; // NANO A1 analog pin, as digital input
 //const int IR_Sens_3 = ; // not in use
 
-const int switch_Halt = 12;  // NANO analog pin
 //active = LOW - default = true (HIGH) pause code until false (LOW)
+const int switch_Halt = 12;  // NANO analog pin
 
-const int pushButton_1 = 6; // NANO Analog A5 Pin called as digital pin, active = HIGH, move stepM
-const int pushButton_2 = 11; // NANO Analog A6 Pin called as digital pin, 
-//const int pushButton_3 = ; // NANO Analog A7 Pin called as digital pin, 
+const int pushButton_1 = 2; // NANO Analog A5 Pin called as digital pin, active = HIGH, move stepM
+const int pushButton_2 = 3; // NANO Analog A6 Pin called as digital pin, 
+//const int pushButton_3 = ; // NANO Analog A7 Pin called as digital pin, NOT IN USE
 
 // StepM 1 - StepM for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
-const int StepM1_IN1 = 2;  // NANO digital pin, stepMotor - IN1
-const int stepM1_IN2 = 3;  // NANO digital pin, stepMotor - IN2
-const int stepM1_IN3 = 4;  // NANO digital pin, stepMotor - IN3
-const int stepM1_IN4 = 5; // NANO digital pin, stepMotor - IN4
+const int StepM1_IN1 = 4; // NANO digital pin, stepMotor - IN1
+const int stepM1_IN2 = 5; // NANO digital pin, stepMotor - IN2
+const int stepM1_IN3 = 6; // NANO digital pin, stepMotor - IN3
+const int stepM1_IN4 = 7; // NANO digital pin, stepMotor - IN4
 
-// StepM 2 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
-const int stepM2_IN1 = 7; // NANO digital pin, stepMotor - IN1
-const int stepM2_IN2 = 8; // NANO digital pin, stepMotor - IN2
-const int stepM2_IN3 = 9; // NANO digital pin, stepMotor - IN3
-const int stepM2_IN4 = 10; // NANO digital pin, stepMotor - IN4
-
-// StepM for Stop_Start_02 (_02: nr. 2) Stop and Start for sigle lane ro
+// StepM 2 - StepM for Stop_Start_02 (_01: nr. 2) Stop and Start for sigle lane road
+const int stepM2_IN1 = 8;  // NANO digital pin, stepMotor - IN1
+const int stepM2_IN2 = 9;  // NANO digital pin, stepMotor - IN2
+const int stepM2_IN3 = 10; // NANO digital pin, stepMotor - IN3
+const int stepM2_IN4 = 11; // NANO digital pin, stepMotor - IN4
 
 // StepM 3 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
 // const int stepM3_IN1 = ; // NANO Analog A0 Pin called as digital pin, stepMotor - IN1
