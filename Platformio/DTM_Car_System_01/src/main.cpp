@@ -65,8 +65,8 @@ long stepM_1_StopPos = 72;    // move stepM CW to Stop position
 long stepM_1_IRsensPos = -80; // move stepM CCW to IR sensor position
 
 // NOTE: this stepM move CCW to IR sensor position
-long stepM_2_StopPos = 245;    // move stepM CW to Stop position
-long stepM_2_IRsensPos = -250; // move stepM CCW to IR sensor position
+long stepM_2_StopPos = 150;    // move stepM CW to Stop position
+long stepM_2_IRsensPos = -180; // move stepM CCW to IR sensor position
 
 // NOTE: this stepM move CW to IR sensor position
 //long stepM_3_StopPos = -200;  // move stepM CCW to Stop position
@@ -265,8 +265,8 @@ void setup() { /****************************************************************
   moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
   delay(delay_1);
   
- // moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
- // delay(delay_1);
+  moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
+  delay(delay_1);
   
   //moveToIRsens(stepM_3, stepM_1_IRsensPos, IR_Sens_3, 3);
   //delay(delay_1);
