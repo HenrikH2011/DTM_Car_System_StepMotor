@@ -16,13 +16,21 @@ Library: Accelstepper.h documentation homepage:
 ToDo:
 1. edit Pin connections 
   - Digital
-  - Analog pin's
+  - Analog pin's : Can't use analog pins AccelStepper.h
   - NEW pin edit:
-    - stepM1 new pin settings, adjust in code
-    - stepM2 new pin settings, adjust in code
-    - stepM3 comment-out - not used, not enough digital pins on Nano. Can't use analog pins AccelStepper.h
+    - stepM1 new pin settings, adjust in code : OK
+    - stepM2 new pin settings, adjust in code : OK
+    - stepM3 new pin settings, adjust in code : OK
+    - Pushbutton new pin settings, adjust in code : OK
+    - IR sensor new pin settings, adjust in code : OK
+    - switch_Halt new pin settings, adjust in code : OK
 
-2. 
+
+2. Connect stepM, IR-sensor, switch_Halt and pushbutton to NANO extension shield, with new pin settings..!!!!
+
+3. Test and debug code, check if all pins are connected properly.
+4. Check if all stepM is working properly.
+5. Test all functions and adjust code.
 
 Description: 
 - This code is for Stop and Start magnets and Intersection control for 2 lane road, 
@@ -91,32 +99,33 @@ char pos_Status = 'X'; // S = Sensor, M = Middle, L = Left - position status
 // active = HIGH (Object detected) Signal inverted in IC on PCB
 const int IR_Sens_1 = 14; // NANO A0 analog pin, as digital input
 const int IR_Sens_2 = 15; // NANO A1 analog pin, as digital input
-//const int IR_Sens_3 = ; // not in use
+const int IR_Sens_3 = 16; // NANO A2 analog pin, as digital input
 
 //active = LOW - default = true (HIGH) pause code until false (LOW)
-const int switch_Halt = 12;  // NANO analog pin
+const int switch_Halt = 20;  // NANO analog A6 pin - ONLY Analog IN/OUT (A7 ONLY analog IN/OUT)
 
-const int pushButton_1 = 2; // NANO Analog A5 Pin called as digital pin, active = HIGH, move stepM
-const int pushButton_2 = 3; // NANO Analog A6 Pin called as digital pin, 
-//const int pushButton_3 = ; // NANO Analog A7 Pin called as digital pin, NOT IN USE
+const int pushButton_1 = 17; // NANO Analog A3 Pin called as digital pin, active = HIGH, move stepM
+const int pushButton_2 = 18; // NANO Analog A4 Pin called as digital pin, 
+const int pushButton_3 = 19; // NANO Analog A5 Pin called as digital pin, NOT IN USE
 
 // StepM 1 - StepM for Stop_Start_01 (_01: nr. 1) Stop and Start with Intersection
-const int StepM1_IN1 = 4; // NANO digital pin, stepMotor - IN1
-const int stepM1_IN2 = 5; // NANO digital pin, stepMotor - IN2
-const int stepM1_IN3 = 6; // NANO digital pin, stepMotor - IN3
-const int stepM1_IN4 = 7; // NANO digital pin, stepMotor - IN4
+const int StepM1_IN1 = 2; // NANO digital pin, stepMotor - IN1
+const int stepM1_IN2 = 3; // NANO digital pin, stepMotor - IN2
+const int stepM1_IN3 = 4; // NANO digital pin, stepMotor - IN3
+const int stepM1_IN4 = 5; // NANO digital pin, stepMotor - IN4
 
 // StepM 2 - StepM for Stop_Start_02 (_01: nr. 2) Stop and Start for sigle lane road
-const int stepM2_IN1 = 8;  // NANO digital pin, stepMotor - IN1
-const int stepM2_IN2 = 9;  // NANO digital pin, stepMotor - IN2
-const int stepM2_IN3 = 10; // NANO digital pin, stepMotor - IN3
-const int stepM2_IN4 = 11; // NANO digital pin, stepMotor - IN4
+const int stepM2_IN1 = 6;  // NANO digital pin, stepMotor - IN1
+const int stepM2_IN2 = 7;  // NANO digital pin, stepMotor - IN2
+const int stepM2_IN3 = 8; // NANO digital pin, stepMotor - IN3
+const int stepM2_IN4 = 9; // NANO digital pin, stepMotor - IN4
+
 
 // StepM 3 - StepM for Intersection_2_01 (_2: 2 Lane road. _01: Intersection nr. 1)
-// const int stepM3_IN1 = ; // NANO Analog A0 Pin called as digital pin, stepMotor - IN1
-//const int stepM3_IN2 = ; // NANO Analog A1 Pin called as digital pin, stepMotor - IN2
-//const int stepM3_IN3 = ; // NANO Analog A2 Pin called as digital pin, stepMotor - IN3
-//const int stepM3_IN4 = ; // NANO Analog A3 Pin called as digital pin, stepMotor - IN4
+const int stepM3_IN1 = 10 ; // NANO digital pin, stepMotor - IN1
+const int stepM3_IN2 = 11 ; // NANO digital pin, stepMotor - IN2
+const int stepM3_IN3 = 12 ; // NANO digital pin, stepMotor - IN3
+const int stepM3_IN4 = 13 ; // NANO digital pin, stepMotor - IN4
 
 
 // Accellstepper library - MotorInterfaceType object
@@ -209,7 +218,7 @@ void setup() { /****************************************************************
 
   pinMode(IR_Sens_1, INPUT_PULLUP);  // IR sensor internal pullUp
   pinMode(IR_Sens_2, INPUT_PULLUP);  
-  //pinMode(IR_Sens_3, INPUT_PULLUP);  
+  pinMode(IR_Sens_3, INPUT_PULLUP);  
 
   /* --------------------- AccelStepper functions setup: ---------------------------------------------- */
   // Set the acceleration, maximum steps and speed per second ^2 (steps per second squared) ^2 means x²
@@ -233,8 +242,8 @@ void setup() { /****************************************************************
   Serial.println("Check IR sensors state: LOW(object NOT detected) / HIGH (object detected) ");
   Serial.print("IR sens 1: ");
   Serial.println(digitalRead(IR_Sens_1));
-  Serial.print("IR sens 2: ");
-  Serial.println(digitalRead(IR_Sens_2));
+  //Serial.print("IR sens 2: ");
+  //Serial.println(digitalRead(IR_Sens_2));
   //Serial.print("IR sens 3: ");
   //Serial.println(digitalRead(IR_Sens_3));
   Serial.println("");
@@ -265,8 +274,8 @@ void setup() { /****************************************************************
   moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
   delay(delay_1);
   
-  moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
-  delay(delay_1);
+  //moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
+  //delay(delay_1);
   
   //moveToIRsens(stepM_3, stepM_1_IRsensPos, IR_Sens_3, 3);
   //delay(delay_1);
@@ -300,7 +309,8 @@ void loop() { /*****************************************************************
     moveToIRsens(stepM_1, stepM_1_IRsensPos, IR_Sens_1, 1);
     delay(delay_1);    
   } // END if
-
+  
+  /*
   if (digitalRead(pushButton_2) == LOW) {
     Serial.println("pushbutton 2 pressed");
     Serial.println("");
@@ -310,6 +320,7 @@ void loop() { /*****************************************************************
     moveToIRsens(stepM_2, stepM_2_IRsensPos, IR_Sens_2, 2);
     delay(delay_1);    
   } // END if
+  */
   
   /*
   if (digitalRead(pushButton_3) == LOW) {
